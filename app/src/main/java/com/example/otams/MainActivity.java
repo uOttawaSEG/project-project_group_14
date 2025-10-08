@@ -17,14 +17,14 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        // Adjust padding for system bars
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        // --- Button click to go to PreSignUpActivity ---
+
         MaterialButton signUpButton = findViewById(R.id.signUpButton);
         signUpButton.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, PreSignUpActivity.class);
@@ -32,4 +32,3 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 }
-

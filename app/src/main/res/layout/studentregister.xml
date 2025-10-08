@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg2"
+    tools:context=".StudentRegisterForm">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/primary_color"
+        android:alpha="0.6">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:layout_marginBottom="25dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="OTAMS"
+                android:textColor="@color/white"
+                android:textSize="32sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </RelativeLayout>
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="20dp"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="8dp">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+
+                android:padding="28dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Student Registration"
+                    android:textColor="@color/primary_color"
+                    android:textSize="28sp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Please fill in your details below"
+                    android:alpha="0.6"
+                    android:layout_marginBottom="24dp"/>
+
+
+                <EditText
+                    android:id="@+id/firstNameInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="First Name"
+                    android:inputType="textPersonName"
+
+                    android:drawablePadding="10dp"
+                    android:padding="12dp"/>
+
+
+                <View android:layout_height="10dp" android:layout_width="wrap_content"/>
+
+
+                <EditText
+                    android:id="@+id/lastNameInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Last Name"
+                    android:inputType="textPersonName"
+
+                    android:drawablePadding="10dp"
+                    android:padding="12dp"/>
+
+
+                <View android:layout_height="10dp" android:layout_width="wrap_content"/>
+
+
+                <EditText
+                    android:id="@+id/emailInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Email Address"
+                    android:inputType="textEmailAddress"
+
+                    android:drawablePadding="10dp"
+                    android:padding="12dp"/>
+
+
+                <View android:layout_height="10dp" android:layout_width="wrap_content"/>
+
+
+                <EditText
+                    android:id="@+id/passwordInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Password"
+                    android:inputType="textPassword"
+                    android:drawableStart="@drawable/password_icon"
+                    android:drawablePadding="10dp"
+                    android:padding="12dp"/>
+
+
+                <View android:layout_height="10dp" android:layout_width="wrap_content"/>
+
+
+                <EditText
+                    android:id="@+id/phoneInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Phone Number"
+                    android:inputType="phone"
+
+                    android:drawablePadding="10dp"
+                    android:padding="12dp"/>
+
+
+                <View android:layout_height="10dp" android:layout_width="wrap_content"/>
+
+
+                <EditText
+                    android:id="@+id/programInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Program of Study"
+                    android:inputType="text"
+
+                    android:drawablePadding="10dp"
+                    android:padding="12dp"/>
+
+
+                <View android:layout_height="20dp" android:layout_width="wrap_content"/>
+
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/registerButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:text="Register"
+                    app:cornerRadius="30dp"
+                    app:backgroundTint="@color/primary_color"
+
+                    android:textColor="@android:color/white"/>
+
+
+
+            </LinearLayout>
+        </ScrollView>
+
+
+
+
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>
