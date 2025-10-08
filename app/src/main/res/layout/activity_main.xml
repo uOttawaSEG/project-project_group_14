@@ -65,7 +65,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Please login as an tutor or student"
+                android:text="Please login as a tutor or a student"
                 android:alpha="0.7"/>
             
             <View
@@ -140,6 +140,8 @@
                 android:layout_height="10dp"/>
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/signUpButton"
+
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:text="Sign up"
