@@ -23,6 +23,7 @@
 
         <activity android:name=".PreSignUpActivity" />
         <activity android:name=".StudentRegisterForm"/>
+        <activity android:name=".TutorRegisterForm"/>
 
 
     </application>

@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg2"
-    tools:context=".StudentRegisterForm">
+    tools:context=".TutorRegisterForm">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -26,8 +26,7 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fillViewport="true">
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -38,7 +37,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Student Registration"
+                    android:text="Tutor Registration"
                     android:textColor="@color/primary_color"
                     android:textSize="28sp"
                     android:textStyle="bold"/>
@@ -56,7 +55,6 @@
                     android:layout_height="wrap_content"
                     android:hint="First Name"
                     android:inputType="textPersonName"
-                    android:drawablePadding="10dp"
                     android:padding="12dp"
                     android:layout_marginBottom="10dp"/>
 
@@ -66,7 +64,6 @@
                     android:layout_height="wrap_content"
                     android:hint="Last Name"
                     android:inputType="textPersonName"
-                    android:drawablePadding="10dp"
                     android:padding="12dp"
                     android:layout_marginBottom="10dp"/>
 
@@ -76,18 +73,6 @@
                     android:layout_height="wrap_content"
                     android:hint="Email Address"
                     android:inputType="textEmailAddress"
-                    android:drawablePadding="10dp"
-                    android:padding="12dp"
-                    android:layout_marginBottom="10dp"/>
-
-                <EditText
-                    android:id="@+id/passwordInput"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Password"
-                    android:inputType="textPassword"
-                    android:drawableStart="@drawable/password_icon"
-                    android:drawablePadding="10dp"
                     android:padding="12dp"
                     android:layout_marginBottom="10dp"/>
 
@@ -97,17 +82,34 @@
                     android:layout_height="wrap_content"
                     android:hint="Phone Number"
                     android:inputType="phone"
-                    android:drawablePadding="10dp"
                     android:padding="12dp"
                     android:layout_marginBottom="10dp"/>
 
                 <EditText
-                    android:id="@+id/programInput"
+                    android:id="@+id/passwordInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Program of Study"
+                    android:hint="Password"
+                    android:inputType="textPassword"
+                    android:padding="12dp"
+                    android:layout_marginBottom="10dp"/>
+
+                <EditText
+                    android:id="@+id/degreeInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Highest Degree"
                     android:inputType="text"
-                    android:drawablePadding="10dp"
+                    android:padding="12dp"
+                    android:layout_marginBottom="10dp"/>
+
+                <EditText
+                    android:id="@+id/coursesInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Courses offered (separate with commas)"
+                    android:inputType="textMultiLine"
+                    android:minLines="2"
                     android:padding="12dp"
                     android:layout_marginBottom="20dp"/>
 
@@ -117,8 +119,7 @@
                     android:layout_height="60dp"
                     android:text="Register"
                     app:cornerRadius="30dp"
-                    app:backgroundTint="@color/primary_color"
-                    android:textColor="@android:color/white"/>
+                    app:backgroundTint="@color/primary_color"/>
 
             </LinearLayout>
         </ScrollView>
@@ -130,7 +131,7 @@
         android:layout_above="@id/card_view"
         android:gravity="center"
         android:orientation="vertical"
-        android:paddingTop="100dp">
+        android:paddingTop="50dp">
 
         <ImageView
             android:id="@+id/educationLogo"
@@ -138,10 +139,10 @@
             android:layout_height="100dp"
             android:src="@drawable/school_icon" />
 
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:fontFamily="sans-serif-medium"
             android:text="OTAMS"
             android:textColor="@color/white"
@@ -150,5 +151,3 @@
     </LinearLayout>
 
 </RelativeLayout>
-
-

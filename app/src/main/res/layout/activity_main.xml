@@ -11,46 +11,18 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:alpha="0.7"
+        android:layout_height="match_parent"
         android:background="@color/primary_color"
-        android:gravity="center">
-
-
-        <ImageView
-            android:id="@+id/logoImage"
-            android:layout_width="133dp"
-
-            android:layout_height="113dp"
-
-            android:layout_marginTop="60dp"
-            android:src="@drawable/school_icon" />
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="107dp"
-            android:layout_marginEnd="154dp"
-            android:fontFamily="sans-serif-medium"
-            android:text="OTAMS"
-            android:textColor="@color/white"
-            android:textSize="32sp"
-            android:textStyle="bold" />
-
-    </RelativeLayout>
+        android:alpha="0.7"/>
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        app:cardCornerRadius="24dp"
         android:layout_margin="20dp"
-        app:cardElevation="8dp"
-        android:id="@+id/card_view"
-        >
+        app:cardCornerRadius="24dp"
+        app:cardElevation="8dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -111,19 +83,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-            <CheckBox
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Remember me"
-                android:layout_centerVertical="true"
-                android:alpha="0.7"
-                />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="I forgot my  password"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"/>
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Remember me"
+                    android:layout_centerVertical="true"
+                    android:alpha="0.7"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="I forgot my  password"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"/>
 
             </RelativeLayout>
 
@@ -144,28 +116,39 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/signUpButton"
-
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:text="Sign up"
                 app:cornerRadius="32dp"
                 app:backgroundTint="@color/primary_color"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="-14dp"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="28dp">
-
-            </LinearLayout>
-
-
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
-    
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/card_view"
+        android:gravity="center"
+        android:orientation="vertical">
 
-  </RelativeLayout>
+        <ImageView
+            android:id="@+id/logoImage"
+            android:layout_width="200dp"
+            android:layout_height="180dp"
+            android:src="@drawable/school_icon" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:text="OTAMS"
+            android:textColor="@color/white"
+            android:textSize="50sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</RelativeLayout>

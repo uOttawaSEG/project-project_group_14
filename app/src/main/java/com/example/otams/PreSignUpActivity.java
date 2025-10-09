@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.button.MaterialButton;
+
 public class PreSignUpActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,8 +21,9 @@ public class PreSignUpActivity extends AppCompatActivity {
         });
 
         btnTutor.setOnClickListener(v -> {
+            Intent intent = new Intent(PreSignUpActivity.this, com.example.otams.TutorRegisterForm.class);
+            startActivity(intent);
         });
     }
-
-
 }
+
