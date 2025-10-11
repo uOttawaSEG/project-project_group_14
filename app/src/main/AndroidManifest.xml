@@ -24,6 +24,9 @@
         <activity android:name=".PreSignUpActivity" />
         <activity android:name=".StudentRegisterForm"/>
         <activity android:name=".TutorRegisterForm"/>
+        <activity android:name=".WelcomePage"/>
+        <activity android:name=".LogoutActivity"/>
+
 
 
     </application>

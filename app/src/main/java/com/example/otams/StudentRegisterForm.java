@@ -1,5 +1,6 @@
 package com.example.otams;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Patterns;
@@ -31,12 +32,23 @@ public class StudentRegisterForm extends AppCompatActivity{
             @Override
             public void onClick(View view) {
                 if (validateInputs()) {
+                    String firstName = firstNameInput.getText().toString().trim();
+                    String lastName = lastNameInput.getText().toString().trim();
+                    String fullName = firstName + " " + lastName;
+
                     Toast.makeText(StudentRegisterForm.this,
                             "Registration Successful!", Toast.LENGTH_SHORT).show();
-                    // TODO: proceed with saving user info or navigating to next activity
+
+                    // Go to WelcomeActivity
+                    Intent intent = new Intent(StudentRegisterForm.this, WelcomePage.class);
+                    intent.putExtra("name", fullName);
+                    intent.putExtra("role", "Student");
+                    startActivity(intent);
+                    finish();
                 }
             }
         });
+
     }
 
     private boolean validateInputs() {

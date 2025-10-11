@@ -1,5 +1,6 @@
 package com.example.otams;
 
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -7,7 +8,9 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.material.button.MaterialButton;
 
 public class TutorRegisterForm extends AppCompatActivity {
@@ -34,13 +37,17 @@ public class TutorRegisterForm extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (validateInputs()) {
-                    // If validation is successful, show a message and go to the login screen
-                    Toast.makeText(TutorRegisterForm.this, "Tutor Registration Successful!", Toast.LENGTH_SHORT).show();
+                    String firstName = firstNameInput.getText().toString().trim();
+                    String lastName = lastNameInput.getText().toString().trim();
+                    String fullName = firstName + " " + lastName;
 
-                    // TODO: Save tutor-specific data (degree, courses) to database
+                    Toast.makeText(TutorRegisterForm.this,
+                            "Tutor Registration Successful!", Toast.LENGTH_SHORT).show();
 
-                    Intent intent = new Intent(TutorRegisterForm.this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    // Navigate to WelcomeActivity
+                    Intent intent = new Intent(TutorRegisterForm.this, WelcomePage.class);
+                    intent.putExtra("name", fullName);
+                    intent.putExtra("role", "Tutor");
                     startActivity(intent);
                     finish();
                 }
@@ -113,3 +120,4 @@ public class TutorRegisterForm extends AppCompatActivity {
         return isValid;
     }
 }
+
