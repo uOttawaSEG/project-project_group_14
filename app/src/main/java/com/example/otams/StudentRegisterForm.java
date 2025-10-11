@@ -39,7 +39,7 @@ public class StudentRegisterForm extends AppCompatActivity{
                     Toast.makeText(StudentRegisterForm.this,
                             "Registration Successful!", Toast.LENGTH_SHORT).show();
 
-                    // Go to WelcomeActivity
+
                     Intent intent = new Intent(StudentRegisterForm.this, WelcomePage.class);
                     intent.putExtra("name", fullName);
                     intent.putExtra("role", "Student");
