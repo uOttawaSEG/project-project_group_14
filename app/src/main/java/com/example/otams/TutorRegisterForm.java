@@ -23,14 +23,14 @@ public class TutorRegisterForm extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tutorregister);
 
-        // Initialize views
+
         firstNameInput = findViewById(R.id.firstNameInput);
         lastNameInput = findViewById(R.id.lastNameInput);
         emailInput = findViewById(R.id.emailInput);
         phoneInput = findViewById(R.id.phoneInput);
         passwordInput = findViewById(R.id.passwordInput);
-        degreeInput = findViewById(R.id.degreeInput); // NEW: Highest degree
-        coursesInput = findViewById(R.id.coursesInput); // NEW: Courses offered
+        degreeInput = findViewById(R.id.degreeInput);
+        coursesInput = findViewById(R.id.coursesInput);
         registerButton = findViewById(R.id.registerButton);
 
         registerButton.setOnClickListener(new View.OnClickListener() {
@@ -56,7 +56,7 @@ public class TutorRegisterForm extends AppCompatActivity {
     }
 
     private boolean validateInputs() {
-        // Get text from all fields
+
         String firstName = firstNameInput.getText().toString().trim();
         String lastName = lastNameInput.getText().toString().trim();
         String email = emailInput.getText().toString().trim();

@@ -31,7 +31,7 @@ public class WelcomePage extends AppCompatActivity {
 
 
             welcomeTitle.setText("Welcome, " + name + "!" );
-            userNameText.setText(name);
+
 
 
             userRoleText.setText("You are logged in as " + role);
