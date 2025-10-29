@@ -37,7 +37,6 @@ public class WelcomePage extends AppCompatActivity {
             userRoleText.setText("You are logged in as " + role);
 
 
-       
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "303863545187",
+    "firebase_url": "https://otams-f9143-default-rtdb.firebaseio.com",
+    "project_id": "otams-f9143",
+    "storage_bucket": "otams-f9143.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:303863545187:android:c4ed5060d8c1835795e756",
+        "android_client_info": {
+          "package_name": "com.example.otams"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvz59K6q1V_6egaMC28vJxGj_2fNQ6j2k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
