@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
         switch (status.toLowerCase()) {
             case "pending":
                 Intent pendingIntent = new Intent(MainActivity.this, PendingActivity.class);
-                pendingIntent.putExtra("firstName", firstName);  // ✅ send the name from Firebase
+                pendingIntent.putExtra("firstName", firstName);  
                 startActivity(pendingIntent);
                 finish();
                 break;
