@@ -22,7 +22,7 @@
         android:id="@+id/rejectedMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Your registration was rejected."
+        android:text="Your registration has been rejected. Please contact administration at: 613-621-5312"
         android:textAlignment="center"
         android:textSize="16sp"
         android:textColor="@color/black"
