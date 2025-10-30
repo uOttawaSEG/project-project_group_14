@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         dbRef = FirebaseDatabase.getInstance().getReference("registrationRequests");
 
-        // ----------- LOGIN -----------
+        // logging in
         loginButton.setOnClickListener(v -> {
             String email = emailInput.getText().toString().trim();
             String password = passwordInput.getText().toString().trim();
@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
-            // Check if it’s the admin
+            // Check if it’s the admin Rohachena
             if (email.equalsIgnoreCase("Rohachena@gmail.com") && password.equals("group14")) {
                 Intent intent = new Intent(MainActivity.this, WelcomePage.class);
                 intent.putExtra("name", "Administrator");
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
                             String uid = user.getUid();
 
-                            // Check both student and tutor collections
+                            // Check both student and tutor
                             checkUserStatus(uid);
                         } else {
                             Toast.makeText(MainActivity.this, "Invalid credentials.", Toast.LENGTH_SHORT).show();
@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
                     });
         });
 
-        // ----------- SIGN UP BUTTON -----------
+        // SIGN UP BUTTON
         signUpButton.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, PreSignUpActivity.class);
             startActivity(intent);

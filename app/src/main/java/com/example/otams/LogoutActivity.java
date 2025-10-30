@@ -34,7 +34,7 @@ public class LogoutActivity extends AppCompatActivity {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish(); // Go back to WelcomeActivity
+                finish(); // Goes back to Welcome page
             }
         });
 

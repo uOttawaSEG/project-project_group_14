@@ -20,24 +20,24 @@ public class RejectedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rejected);
 
-        // Apply system window insets
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.rejectedLayout), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        // Link Java with XML views
+
         rejectedMessage = findViewById(R.id.rejectedMessage);
         backToLoginButton = findViewById(R.id.backToLoginButton);
 
-        // Get the user's name from intent
+
         String name = getIntent().getStringExtra("name");
 
-        // Display personalized message
+
         rejectedMessage.setText("Your registration request was rejected.\n\nPlease contact the administrator at 555-123-4567.");
 
-        // Handle button click
+
         backToLoginButton.setOnClickListener(v -> {
             Intent intent = new Intent(RejectedActivity.this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);

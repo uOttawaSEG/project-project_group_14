@@ -1,6 +1,6 @@
 package com.example.otams;
 
-import android.content.Intent;
+
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Patterns;
@@ -47,7 +47,7 @@ public class StudentRegisterForm extends AppCompatActivity {
 
         // Firebase
         mAuth = FirebaseAuth.getInstance();
-        // We'll store requests under /registrationRequests/students/{uid}
+
         requestsRootRef = FirebaseDatabase.getInstance().getReference("registrationRequests").child("students");
 
         registerButton.setOnClickListener(new View.OnClickListener() {
@@ -72,7 +72,7 @@ public class StudentRegisterForm extends AppCompatActivity {
                                     if (authTask.isSuccessful()) {
                                         String uid = mAuth.getCurrentUser().getUid();
 
-                                        // Build request map (do NOT include password)
+                                        // Build request map (not include password)
                                         Map<String, Object> requestMap = new HashMap<>();
                                         requestMap.put("uid", uid);
                                         requestMap.put("firstName", firstName);
@@ -84,7 +84,7 @@ public class StudentRegisterForm extends AppCompatActivity {
                                         requestMap.put("status", "pending");
                                         requestMap.put("createdAt", ServerValue.TIMESTAMP);
 
-                                        // Save under /registrationRequests/students/{uid}
+
                                         requestsRootRef.child(uid).setValue(requestMap)
                                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                     @Override
@@ -102,13 +102,13 @@ public class StudentRegisterForm extends AppCompatActivity {
                                                             finish();
 
                                                         } else {
-                                                            // DB write failed — show message and delete the created auth user to avoid orphaned accounts
+
                                                             String err = dbTask.getException() != null ? dbTask.getException().getMessage() : "Unknown error";
                                                             Toast.makeText(StudentRegisterForm.this,
                                                                     "Failed to submit registration: " + err,
                                                                     Toast.LENGTH_LONG).show();
 
-                                                            // Try to delete the auth user we just created (cleanup)
+
                                                             if (mAuth.getCurrentUser() != null) {
                                                                 mAuth.getCurrentUser().delete();
                                                             }

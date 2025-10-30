@@ -30,12 +30,8 @@
         <activity android:name=".LogoutActivity"/>
         <activity android:name=".PendingActivity"/>
         <activity android:name=".RejectedActivity"/>
-
-
-
-
-
-
+        <activity android:name=".AdminInboxActivity"/>
+        <activity android:name=".RejectedRequestsActivity"/>
 
 
     </application>

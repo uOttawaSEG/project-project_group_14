@@ -1,6 +1,5 @@
 package com.example.otams;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -76,7 +75,7 @@ public class TutorRegisterForm extends AppCompatActivity {
         // disable button to avoid duplicate submissions
         registerButton.setEnabled(false);
 
-        // 1) create auth user
+
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(TutorRegisterForm.this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -84,7 +83,7 @@ public class TutorRegisterForm extends AppCompatActivity {
                         if (authTask.isSuccessful()) {
                             String uid = mAuth.getCurrentUser().getUid();
 
-                            // 2) build request map (no password)
+
                             Map<String, Object> requestMap = new HashMap<>();
                             requestMap.put("uid", uid);
                             requestMap.put("firstName", firstName);
@@ -97,14 +96,14 @@ public class TutorRegisterForm extends AppCompatActivity {
                             requestMap.put("status", "pending");
                             requestMap.put("createdAt", ServerValue.TIMESTAMP);
 
-                            // 3) write to Realtime DB at /registrationRequests/tutors/{uid}
+                            // 3) write to Realtime DB
                             requestsRootRef.child(uid).setValue(requestMap)
                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> dbTask) {
                                             registerButton.setEnabled(true);
                                             if (dbTask.isSuccessful()) {
-                                                // successful submission - sign out so user can't access app until admin approves
+                                                // successful submission
                                                 mAuth.signOut();
 
                                                 Toast.makeText(TutorRegisterForm.this,
@@ -119,7 +118,7 @@ public class TutorRegisterForm extends AppCompatActivity {
                                                 Log.e(TAG, "DB write failed", dbEx);
                                                 Toast.makeText(TutorRegisterForm.this, "Registration failed (DB): " + msg, Toast.LENGTH_LONG).show();
 
-                                                // Clean up created Auth user (best effort)
+
                                                 if (mAuth.getCurrentUser() != null) {
                                                     mAuth.getCurrentUser().delete().addOnCompleteListener(delTask -> {
                                                         if (!delTask.isSuccessful()) {
