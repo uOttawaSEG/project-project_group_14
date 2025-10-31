@@ -1,44 +1,38 @@
 package com.example.otams;
 
+
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class RejectedRequestsActivity extends AppCompatActivity {
 
-    private RecyclerView rvRejected;
     private DatabaseReference requestsRef;
-    private List<AdminInboxActivity.RequestWithPath> rejectedList;
+    private ArrayList<RequestItem> rejectedList;
     private RejectedAdapter adapter;
-    private static final String TAG = "RejectedRequests";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rejected_inbox);
 
-        rvRejected = findViewById(R.id.rvRejected);
+        RecyclerView rvRejected = findViewById(R.id.rvRejected);
         rvRejected.setLayoutManager(new LinearLayoutManager(this));
+
         requestsRef = FirebaseDatabase.getInstance().getReference("registrationRequests");
         rejectedList = new ArrayList<>();
         adapter = new RejectedAdapter(rejectedList);
@@ -49,18 +43,19 @@ public class RejectedRequestsActivity extends AppCompatActivity {
 
     private void loadRejected() {
         rejectedList.clear();
+
         requestsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+            public void onDataChange(DataSnapshot snapshot) {
                 rejectedList.clear();
                 for (DataSnapshot roleNode : snapshot.getChildren()) {
                     String role = roleNode.getKey();
                     if (role == null) continue;
-                    for (DataSnapshot child : roleNode.getChildren()) {
-                        RegistrationRequest r = child.getValue(RegistrationRequest.class);
-                        if (r == null) continue;
-                        if ("rejected".equalsIgnoreCase(r.status)) {
-                            rejectedList.add(new AdminInboxActivity.RequestWithPath(role, child.getKey(), r));
+
+                    for (DataSnapshot userNode : roleNode.getChildren()) {
+                        RegistrationRequest req = userNode.getValue(RegistrationRequest.class);
+                        if (req != null && "rejected".equals(req.status)) {
+                            rejectedList.add(new RequestItem(userNode.getKey(), role, req));
                         }
                     }
                 }
@@ -68,64 +63,63 @@ public class RejectedRequestsActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(RejectedRequestsActivity.this,
-                        "Failed to load rejected: " + error.getMessage(),
-                        Toast.LENGTH_LONG).show();
-            }
+            public void onCancelled(com.google.firebase.database.DatabaseError error) { }
         });
     }
 
-    private class RejectedAdapter extends RecyclerView.Adapter<RejectedAdapter.VH> {
-        List<AdminInboxActivity.RequestWithPath> items;
+    static class RequestItem {
+        String id;
+        String role;
+        RegistrationRequest req;
 
-        RejectedAdapter(List<AdminInboxActivity.RequestWithPath> items) {
-            this.items = items;
+        RequestItem(String id, String role, RegistrationRequest req) {
+            this.id = id;
+            this.role = role;
+            this.req = req;
         }
+    }
 
-        @NonNull
+    private class RejectedAdapter extends RecyclerView.Adapter<RejectedAdapter.ViewHolder> {
+
+        ArrayList<RequestItem> items;
+
+        RejectedAdapter(ArrayList<RequestItem> items) { this.items = items; }
+
         @Override
-        public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View v = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.item_request, parent, false);
-            return new VH(v);
+            return new ViewHolder(v);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull VH holder, int position) {
-            AdminInboxActivity.RequestWithPath rp = items.get(position);
-            RegistrationRequest r = rp.request;
+        public void onBindViewHolder(ViewHolder holder, int position) {
+            RequestItem r = items.get(position);
 
-            holder.tvNameRole.setText(r.getDisplayName() + " — " + rp.role);
-            holder.tvEmail.setText(r.email == null ? "" : r.email);
+            holder.tvNameRole.setText(r.req.firstName + " " + r.req.lastName + " (" + r.role + ")");
+            holder.tvEmail.setText(r.req.email);
 
-            String extra = "";
-            if ("students".equalsIgnoreCase(rp.role) && r.program != null)
-                extra = "Program: " + r.program;
-            if ("tutors".equalsIgnoreCase(rp.role)) {
-                if (r.degree != null) extra += "Degree: " + r.degree;
-                if (r.courses != null && !r.courses.isEmpty())
-                    extra += (extra.isEmpty() ? "" : " | ") + "Courses: " + r.courses;
+            String info = "";
+            if (r.role.equals("students")) {
+                info = "Program: " + r.req.program;
+            } else if (r.role.equals("tutors")) {
+                info = "Degree: " + r.req.degree + "\nCourses: " + r.req.courses;
             }
-            holder.tvExtra.setText(extra);
+            holder.tvExtra.setText(info);
 
-            // show Approve button for rejected list
-            holder.btnReject.setVisibility(View.GONE);
+            holder.btnReject.setVisibility(View.GONE); // hides reject in rejected list
             holder.btnApprove.setText("Re-Approve");
-
-            holder.btnApprove.setOnClickListener(v -> reapproveRequest(rp));
+            holder.btnApprove.setOnClickListener(v -> reapprove(r));
         }
 
         @Override
-        public int getItemCount() {
-            return items.size();
-        }
+        public int getItemCount() { return items.size(); }
 
-        class VH extends RecyclerView.ViewHolder {
+        class ViewHolder extends RecyclerView.ViewHolder {
             TextView tvNameRole, tvEmail, tvExtra;
             Button btnApprove, btnReject;
 
-            VH(@NonNull View itemView) {
+            ViewHolder(View itemView) {
                 super(itemView);
                 tvNameRole = itemView.findViewById(R.id.tvNameRole);
                 tvEmail = itemView.findViewById(R.id.tvEmail);
@@ -136,45 +130,9 @@ public class RejectedRequestsActivity extends AppCompatActivity {
         }
     }
 
-    // re-approve a rejected request
-    public void reapproveRequest(AdminInboxActivity.RequestWithPath rp) {
-        DatabaseReference rref = requestsRef.child(rp.role).child(rp.uid);
-        rref.runTransaction(new com.google.firebase.database.Transaction.Handler() {
-            @NonNull
-            @Override
-            public com.google.firebase.database.Transaction.Result doTransaction(
-                    @NonNull com.google.firebase.database.MutableData currentData) {
-
-                Object statusObj = currentData.child("status").getValue();
-                String curStatus = (statusObj == null ? null : statusObj.toString());
-                if ("approved".equalsIgnoreCase(curStatus)) {
-                    return com.google.firebase.database.Transaction.abort();
-                }
-                currentData.child("status").setValue("approved");
-                currentData.child("approvedAt").setValue(ServerValue.TIMESTAMP);
-                return com.google.firebase.database.Transaction.success(currentData);
-            }
-
-            @Override
-            public void onComplete(DatabaseError error, boolean committed, DataSnapshot snapshot) {
-                if (committed) {
-                    Toast.makeText(RejectedRequestsActivity.this,
-                            "Request re-approved", Toast.LENGTH_SHORT).show();
-                    loadRejected();
-                } else {
-                    if (error != null) {
-                        Log.e(TAG, "reapprove error", error.toException());
-                        Toast.makeText(RejectedRequestsActivity.this,
-                                "Re-approve failed: " + error.getMessage(),
-                                Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(RejectedRequestsActivity.this,
-                                "Already approved.", Toast.LENGTH_SHORT).show();
-                        loadRejected();
-                    }
-                }
-            }
-        });
+    private void reapprove(RequestItem item) {
+        requestsRef.child(item.role).child(item.id).child("status").setValue("approved");
+        loadRejected();
     }
 }
 

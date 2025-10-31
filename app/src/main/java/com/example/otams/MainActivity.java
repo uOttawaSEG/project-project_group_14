@@ -3,8 +3,8 @@ package com.example.otams;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.EditText;
-import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -49,10 +49,7 @@ public class MainActivity extends AppCompatActivity {
             String email = emailInput.getText().toString().trim();
             String password = passwordInput.getText().toString().trim();
 
-            if (email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Please enter email and password", Toast.LENGTH_SHORT).show();
-                return;
-            }
+
 
             // Check if it’s the admin Rohachena
             if (email.equalsIgnoreCase("Rohachena@gmail.com") && password.equals("group14")) {
@@ -75,8 +72,6 @@ public class MainActivity extends AppCompatActivity {
 
                             // Check both student and tutor
                             checkUserStatus(uid);
-                        } else {
-                            Toast.makeText(MainActivity.this, "Invalid credentials.", Toast.LENGTH_SHORT).show();
                         }
                     });
         });
@@ -102,24 +97,26 @@ public class MainActivity extends AppCompatActivity {
                         public void onDataChange(DataSnapshot tutorSnapshot) {
                             if (tutorSnapshot.exists()) {
                                 handleUserStatus(tutorSnapshot);
-                            } else {
-                                Toast.makeText(MainActivity.this, "No registration record found.", Toast.LENGTH_SHORT).show();
-                                mAuth.signOut();
                             }
+
                         }
 
                         @Override
-                        public void onCancelled(DatabaseError error) {
-                            Toast.makeText(MainActivity.this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                        public void onCancelled(@NonNull DatabaseError error) {
+
                         }
+
+
                     });
                 }
             }
 
             @Override
-            public void onCancelled(DatabaseError error) {
-                Toast.makeText(MainActivity.this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            public void onCancelled(@NonNull DatabaseError error) {
+
             }
+
+
         });
     }
 
@@ -154,10 +151,7 @@ public class MainActivity extends AppCompatActivity {
                 finish();
                 break;
 
-            default:
-                Toast.makeText(this, "Unknown status: " + status, Toast.LENGTH_SHORT).show();
-                mAuth.signOut();
-                break;
+
         }
     }
 }

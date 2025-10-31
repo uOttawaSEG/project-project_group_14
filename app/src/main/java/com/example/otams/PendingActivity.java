@@ -22,7 +22,7 @@ public class PendingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pending);
 
-        // Handle system UI padding
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.pendingLayout), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);

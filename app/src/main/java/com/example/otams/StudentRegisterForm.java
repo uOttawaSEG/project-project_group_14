@@ -1,6 +1,5 @@
 package com.example.otams;
 
-
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Patterns;
@@ -18,25 +17,20 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class StudentRegisterForm extends AppCompatActivity {
+
     private EditText firstNameInput, lastNameInput, emailInput, passwordInput, phoneInput, programInput;
     private MaterialButton registerButton;
 
-    // Firebase
     private FirebaseAuth mAuth;
-    private DatabaseReference requestsRootRef;
+    private DatabaseReference requestsRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.studentregister);
 
-        // UI refs
         firstNameInput = findViewById(R.id.firstNameInput);
         lastNameInput = findViewById(R.id.lastNameInput);
         emailInput = findViewById(R.id.emailInput);
@@ -45,138 +39,94 @@ public class StudentRegisterForm extends AppCompatActivity {
         programInput = findViewById(R.id.programInput);
         registerButton = findViewById(R.id.registerButton);
 
-        // Firebase
         mAuth = FirebaseAuth.getInstance();
-
-        requestsRootRef = FirebaseDatabase.getInstance().getReference("registrationRequests").child("students");
+        requestsRef = FirebaseDatabase.getInstance().getReference("registrationRequests").child("students");
 
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (validateInputs()) {
-                    // Disable button to prevent double clicks
-                    registerButton.setEnabled(false);
+                if (!validateInputs()) return;
 
-                    final String firstName = firstNameInput.getText().toString().trim();
-                    final String lastName = lastNameInput.getText().toString().trim();
-                    final String email = emailInput.getText().toString().trim();
-                    final String password = passwordInput.getText().toString().trim();
-                    final String phone = phoneInput.getText().toString().trim();
-                    final String program = programInput.getText().toString().trim();
+                String firstName = firstNameInput.getText().toString().trim();
+                String lastName = lastNameInput.getText().toString().trim();
+                String email = emailInput.getText().toString().trim();
+                String password = passwordInput.getText().toString().trim();
+                String phone = phoneInput.getText().toString().trim();
+                String program = programInput.getText().toString().trim();
 
-                    // Create auth user (we create auth so email uniqueness is enforced).
-                    mAuth.createUserWithEmailAndPassword(email, password)
-                            .addOnCompleteListener(StudentRegisterForm.this, new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> authTask) {
-                                    if (authTask.isSuccessful()) {
-                                        String uid = mAuth.getCurrentUser().getUid();
+                registerButton.setEnabled(false);
 
-                                        // Build request map (not include password)
-                                        Map<String, Object> requestMap = new HashMap<>();
-                                        requestMap.put("uid", uid);
-                                        requestMap.put("firstName", firstName);
-                                        requestMap.put("lastName", lastName);
-                                        requestMap.put("email", email);
-                                        requestMap.put("phone", phone);
-                                        requestMap.put("program", program);
-                                        requestMap.put("role", "student");
-                                        requestMap.put("status", "pending");
-                                        requestMap.put("createdAt", ServerValue.TIMESTAMP);
+                mAuth.createUserWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(StudentRegisterForm.this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    String uid = mAuth.getCurrentUser().getUid();
 
+                                    RegistrationRequest req = new RegistrationRequest();
+                                    req.firstName = firstName;
+                                    req.lastName = lastName;
+                                    req.email = email;
+                                    req.phone = phone;
+                                    req.program = program;
+                                    req.status = "pending";
 
-                                        requestsRootRef.child(uid).setValue(requestMap)
-                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Void> dbTask) {
-                                                        registerButton.setEnabled(true);
-                                                        if (dbTask.isSuccessful()) {
-                                                            // Sign out so user cannot access app until admin approves
-                                                            mAuth.signOut();
-
-                                                            Toast.makeText(StudentRegisterForm.this,
-                                                                    "Registration submitted. Await admin approval.",
-                                                                    Toast.LENGTH_LONG).show();
-
-                                                            // Optionally navigate back to login screen
-                                                            finish();
-
-                                                        } else {
-
-                                                            String err = dbTask.getException() != null ? dbTask.getException().getMessage() : "Unknown error";
-                                                            Toast.makeText(StudentRegisterForm.this,
-                                                                    "Failed to submit registration: " + err,
-                                                                    Toast.LENGTH_LONG).show();
-
-
-                                                            if (mAuth.getCurrentUser() != null) {
-                                                                mAuth.getCurrentUser().delete();
-                                                            }
-                                                        }
+                                    requestsRef.child(uid).setValue(req)
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> dbTask) {
+                                                    registerButton.setEnabled(true);
+                                                    if (dbTask.isSuccessful()) {
+                                                        mAuth.signOut();
+                                                        Toast.makeText(StudentRegisterForm.this,
+                                                                "Registration submitted! Wait for admin approval.",
+                                                                Toast.LENGTH_LONG).show();
+                                                        finish();
                                                     }
-                                                });
+                                                }
+                                            });
 
-                                    } else {
-                                        registerButton.setEnabled(true);
-                                        String err = authTask.getException() != null ? authTask.getException().getMessage() : "Registration failed";
-                                        Toast.makeText(StudentRegisterForm.this,
-                                                "Registration failed: " + err,
-                                                Toast.LENGTH_LONG).show();
-                                    }
                                 }
-                            });
-                }
+                            }
+                        });
             }
         });
     }
 
     private boolean validateInputs() {
-        boolean valid = true;
+        boolean isValid = true;
 
         if (TextUtils.isEmpty(firstNameInput.getText().toString().trim())) {
             firstNameInput.setError("First name is required");
-            valid = false;
+            isValid = false;
         }
-
         if (TextUtils.isEmpty(lastNameInput.getText().toString().trim())) {
             lastNameInput.setError("Last name is required");
-            valid = false;
+            isValid = false;
         }
-
         String email = emailInput.getText().toString().trim();
-        if (TextUtils.isEmpty(email)) {
-            emailInput.setError("Email is required");
-            valid = false;
-        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            emailInput.setError("Enter a valid email address");
-            valid = false;
+        if (TextUtils.isEmpty(email) || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            emailInput.setError("Valid email is required");
+            isValid = false;
         }
-
         String password = passwordInput.getText().toString().trim();
-        if (TextUtils.isEmpty(password)) {
-            passwordInput.setError("Password is required");
-            valid = false;
-        } else if (password.length() < 6) {
+        if (TextUtils.isEmpty(password) || password.length() < 6) {
             passwordInput.setError("Password must be at least 6 characters");
-            valid = false;
+            isValid = false;
         }
-
         String phone = phoneInput.getText().toString().trim();
-        if (TextUtils.isEmpty(phone)) {
-            phoneInput.setError("Phone number is required");
-            valid = false;
-        } else if (!Patterns.PHONE.matcher(phone).matches() || phone.length() < 7) {
+        if (TextUtils.isEmpty(phone) || !Patterns.PHONE.matcher(phone).matches() || phone.length() < 7) {
             phoneInput.setError("Enter a valid phone number");
-            valid = false;
+            isValid = false;
         }
-
         if (TextUtils.isEmpty(programInput.getText().toString().trim())) {
             programInput.setError("Program of study is required");
-            valid = false;
+            isValid = false;
         }
 
-        return valid;
+        return isValid;
     }
 }
+
 
 

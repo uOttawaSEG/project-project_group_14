@@ -17,7 +17,7 @@
             android:id="@+id/tvNameRole"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Name - Role"
+
             android:textStyle="bold"
             android:textSize="16sp" />
 
@@ -25,14 +25,14 @@
             android:id="@+id/tvEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="email@example.com"
+
             android:layout_marginTop="4dp" />
 
         <TextView
             android:id="@+id/tvExtra"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Program / Degree / Courses"
+
             android:layout_marginTop="4dp"
             android:alpha="0.8"/>
 
