@@ -11,9 +11,7 @@ When logged in with this account, the app redirects to the **Welcome Page** disp
 > You are logged in as Administrator.
 
 ## Special note
-One team member was unable to commit to the project due to unforeseen personal circumstances.  
-This situation was discussed with and approved by the professor, and the rest of the team continued the development and submission process accordingly.
-
+We had an extension until November 2nd, due to one of our teamates dropping the course.
 ---
 
 ## 
