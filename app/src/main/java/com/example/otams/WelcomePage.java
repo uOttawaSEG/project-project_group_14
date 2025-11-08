@@ -14,6 +14,7 @@ public class WelcomePage extends AppCompatActivity {
     private TextView welcomeTitle, userNameText, userRoleText;
     private MaterialButton logoutButton;
     private MaterialButton adminInboxButton;
+    private MaterialButton tutorDashboardButton; // ADD THIS LINE
 
     private String name, role;
 
@@ -27,6 +28,7 @@ public class WelcomePage extends AppCompatActivity {
         userRoleText = findViewById(R.id.userRoleText);
         logoutButton = findViewById(R.id.LogoutButton);
         adminInboxButton = findViewById(R.id.adminInboxButton);
+        tutorDashboardButton = findViewById(R.id.tutorDashboardButton); // ADD THIS LINE
 
         name = getIntent().getStringExtra("name");
         role = getIntent().getStringExtra("role");
@@ -47,6 +49,16 @@ public class WelcomePage extends AppCompatActivity {
             });
         } else {
             adminInboxButton.setVisibility(View.GONE);
+        }
+
+        if ("tutor".equalsIgnoreCase(role.trim())) {
+            tutorDashboardButton.setVisibility(View.VISIBLE);
+            tutorDashboardButton.setOnClickListener(v -> {
+                Intent i = new Intent(WelcomePage.this, TutorDashboardActivity.class);
+                startActivity(i);
+            });
+        } else {
+            tutorDashboardButton.setVisibility(View.GONE);
         }
 
         logoutButton.setOnClickListener(v -> {

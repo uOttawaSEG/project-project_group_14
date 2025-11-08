@@ -32,6 +32,10 @@
         <activity android:name=".RejectedActivity"/>
         <activity android:name=".AdminInboxActivity"/>
         <activity android:name=".RejectedRequestsActivity"/>
+        <activity android:name=".TutorDashboardActivity" />
+        <activity android:name=".ManageAvailabilityActivity" />
+        <activity android:name=".SessionsActivity" />
+        <activity android:name=".PendingRequestsActivity" />
 
 
     </application>

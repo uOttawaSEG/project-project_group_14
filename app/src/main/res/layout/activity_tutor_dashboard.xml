@@ -7,8 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg2"
-    tools:context=".WelcomePage">
-
+    tools:context=".TutorDashboardActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -20,7 +19,7 @@
         android:id="@+id/card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
         android:layout_margin="20dp"
         app:cardCornerRadius="24dp"
         app:cardElevation="8dp">
@@ -32,44 +31,50 @@
             android:padding="28dp"
             android:gravity="center_horizontal">
 
-
             <TextView
-                android:id="@+id/welcomeTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Welcome!"
+                android:text="Tutor Dashboard"
                 android:textColor="@color/primary_color"
                 android:textSize="28sp"
                 android:textStyle="bold"
-                android:layout_marginBottom="12dp" />
-
-
-            <TextView
-                android:id="@+id/userNameText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:textColor="@android:color/black"
-                android:layout_marginBottom="8dp" />
-
-
-            <TextView
-                android:id="@+id/userRoleText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-
-                android:textSize="18sp"
-                android:textColor="@android:color/darker_gray"
                 android:layout_marginBottom="24dp" />
 
-
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/LogoutButton"
+                android:id="@+id/btnManageAvailability"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:text="Log out"
+                android:text="Manage Availability"
+                app:cornerRadius="30dp"
+                app:backgroundTint="@color/primary_color"
+                android:textColor="@android:color/white"
+                android:layout_marginBottom="12dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnPendingRequests"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:text="Pending Session Requests"
+                app:cornerRadius="30dp"
+                app:backgroundTint="@color/primary_color"
+                android:textColor="@android:color/white"
+                android:layout_marginBottom="12dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnUpcomingSessions"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:text="Upcoming Sessions"
+                app:cornerRadius="30dp"
+                app:backgroundTint="@color/primary_color"
+                android:textColor="@android:color/white"
+                android:layout_marginBottom="12dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnPastSessions"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:text="Past Sessions"
                 app:cornerRadius="30dp"
                 app:backgroundTint="@color/primary_color"
                 android:textColor="@android:color/white" />
@@ -77,19 +82,17 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/card_view"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:gravity="center"
         android:orientation="vertical"
-        android:paddingTop="100dp">
+        android:paddingTop="60dp">
 
         <ImageView
-            android:id="@+id/educationLogo"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:src="@drawable/school_icon"
             android:contentDescription="App Logo" />
 
@@ -98,34 +101,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:fontFamily="sans-serif-medium"
-            android:text="OTAMS"
+            android:text="TUTOR PORTAL"
             android:textColor="@color/white"
-            android:textSize="32sp"
+            android:textSize="24sp"
             android:textStyle="bold" />
     </LinearLayout>
-
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/adminInboxButton"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:text="Open Admin Inbox"
-        app:cornerRadius="30dp"
-        app:backgroundTint="@color/primary_color"
-        android:textColor="@android:color/white"
-        android:layout_marginBottom="12dp"
-        android:visibility="gone" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/tutorDashboardButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Tutor Dashboard"
-        android:visibility="gone"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        app:backgroundTint="@color/primary_color"/>
-
-
 
 </RelativeLayout>
