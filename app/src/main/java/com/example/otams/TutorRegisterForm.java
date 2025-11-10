@@ -17,7 +17,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
+
 
 public class TutorRegisterForm extends AppCompatActivity {
 
@@ -78,6 +78,10 @@ public class TutorRegisterForm extends AppCompatActivity {
                                     req.degree = degree;
                                     req.courses = courses;
                                     req.status = "pending";
+
+                                    req.role = "tutor";
+                                    //////
+
 
                                     // save to Firebase
                                     requestsRef.child(uid).setValue(req)
