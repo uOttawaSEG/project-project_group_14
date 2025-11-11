@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         dbRef = FirebaseDatabase.getInstance().getReference("registrationRequests");
 
-        // logging in
+
         loginButton.setOnClickListener(v -> {
             String email = emailInput.getText().toString().trim();
             String password = passwordInput.getText().toString().trim();
@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
-            // Firebase login
+
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
@@ -70,13 +70,13 @@ public class MainActivity extends AppCompatActivity {
 
                             String uid = user.getUid();
 
-                            // Check both student and tutor
+
                             checkUserStatus(uid);
                         }
                     });
         });
 
-        // SIGN UP BUTTON
+
         signUpButton.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, PreSignUpActivity.class);
             startActivity(intent);
@@ -84,14 +84,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkUserStatus(String uid) {
-        // Check first in students
+
         dbRef.child("students").child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot studentSnapshot) {
                 if (studentSnapshot.exists()) {
                     handleUserStatus(studentSnapshot);
                 } else {
-                    // If not student, check tutors
+
                     dbRef.child("tutors").child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot tutorSnapshot) {
@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case "approved":
-            case "accepted": // some use "accepted"
+
                 Intent approvedIntent = new Intent(MainActivity.this, WelcomePage.class);
                 approvedIntent.putExtra("name", firstName);
                 approvedIntent.putExtra("role", role);

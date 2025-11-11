@@ -14,7 +14,7 @@ public class WelcomePage extends AppCompatActivity {
     private TextView welcomeTitle, userNameText, userRoleText;
     private MaterialButton logoutButton;
     private MaterialButton adminInboxButton;
-    private MaterialButton tutorDashboardButton; // ADD THIS LINE
+    private MaterialButton tutorDashboardButton;
 
     private String name, role;
 
@@ -28,7 +28,7 @@ public class WelcomePage extends AppCompatActivity {
         userRoleText = findViewById(R.id.userRoleText);
         logoutButton = findViewById(R.id.LogoutButton);
         adminInboxButton = findViewById(R.id.adminInboxButton);
-        tutorDashboardButton = findViewById(R.id.tutorDashboardButton); // ADD THIS LINE
+        tutorDashboardButton = findViewById(R.id.tutorDashboardButton);
 
         name = getIntent().getStringExtra("name");
         role = getIntent().getStringExtra("role");
@@ -40,7 +40,7 @@ public class WelcomePage extends AppCompatActivity {
         userNameText.setText(name);
         userRoleText.setText("You are logged in as " + role);
 
-        // show admin button only for Administrator role
+
         if ("Administrator".equalsIgnoreCase(role.trim())) {
             adminInboxButton.setVisibility(View.VISIBLE);
             adminInboxButton.setOnClickListener(v -> {

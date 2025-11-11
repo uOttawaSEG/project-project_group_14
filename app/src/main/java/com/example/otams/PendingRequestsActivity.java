@@ -79,19 +79,17 @@ public class PendingRequestsActivity extends AppCompatActivity {
         if ("approve".equals(action)) {
             sessionRef.child("status").setValue("approved")
                     .addOnSuccessListener(aVoid ->
-                            Toast.makeText(this, "Session approved", Toast.LENGTH_SHORT).show())
-                    .addOnFailureListener(e ->
-                            Toast.makeText(this, "Failed to approve: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                            Toast.makeText(this, "Session approved", Toast.LENGTH_SHORT).show());
+
         } else if ("reject".equals(action)) {
             sessionRef.child("status").setValue("rejected")
                     .addOnSuccessListener(aVoid ->
-                            Toast.makeText(this, "Session rejected", Toast.LENGTH_SHORT).show())
-                    .addOnFailureListener(e ->
-                            Toast.makeText(this, "Failed to reject: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                            Toast.makeText(this, "Session rejected", Toast.LENGTH_SHORT).show());
+
         }
     }
 
-    // Move the interface outside the inner class
+
     interface SessionActionListener {
         void onSessionAction(Session session, String action);
     }
@@ -120,7 +118,7 @@ public class PendingRequestsActivity extends AppCompatActivity {
             holder.tvCourse.setText("Course: " + (session.course != null ? session.course : "N/A"));
             holder.tvDateTime.setText("Date: " + session.date + " " + session.startTime);
 
-            // Load student info
+
             loadStudentInfo(session.studentId, holder.tvStudentName);
 
             holder.btnApprove.setOnClickListener(v -> listener.onSessionAction(session, "approve"));

@@ -4,7 +4,6 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -97,6 +96,7 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
                 calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH)
         );
+
         datePicker.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
         datePicker.show();
     }
@@ -105,10 +105,6 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
         TimePickerDialog timePicker = new TimePickerDialog(
                 this,
                 (view, hourOfDay, minute) -> {
-                    calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                    calendar.set(Calendar.MINUTE, minute);
-
-                    // Round to nearest 30 minutes
                     int roundedMinute = (minute / 30) * 30;
                     String time = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, roundedMinute);
                     editText.setText(time);
@@ -126,24 +122,31 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
         String endTime = etEndTime.getText().toString().trim();
         boolean autoApprove = cbAutoApprove.isChecked();
 
+
         if (date.isEmpty() || startTime.isEmpty() || endTime.isEmpty()) {
             Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        //30-minute increments
+
         if (!isValidTimeSlot(startTime) || !isValidTimeSlot(endTime)) {
-            Toast.makeText(this, "Times must be in 30-minute increments (e.g., 8:00, 8:30)", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Times must be in 30-minute increments (e.g., 08:00 or 08:30)", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        //check date not in past
+
         if (isPastDate(date)) {
-            Toast.makeText(this, "Cannot select past dates", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Cannot select a past date", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        //check for overlapping slots
+
+        if (startTime.compareTo(endTime) >= 0) {
+            Toast.makeText(this, "End time must be after start time", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+
         checkForOverlaps(date, startTime, endTime, () -> {
             AvailabilitySlot slot = new AvailabilitySlot(tutorId, date, startTime, endTime, autoApprove);
             String slotId = slotsRef.push().getKey();
@@ -151,20 +154,17 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
 
             slotsRef.child(slotId).setValue(slot.toMap())
                     .addOnSuccessListener(aVoid -> {
-                        Toast.makeText(this, "Availability slot added", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Availability slot added successfully", Toast.LENGTH_SHORT).show();
                         clearForm();
                     })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(this, "Failed to add slot: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    });
+                    .addOnFailureListener(e ->
+                            Toast.makeText(this, "Failed to add slot: " + e.getMessage(), Toast.LENGTH_SHORT).show());
         });
     }
 
     private boolean isValidTimeSlot(String time) {
-        // Validate time is in 30-minute increments
         String[] parts = time.split(":");
         if (parts.length != 2) return false;
-
         int minutes = Integer.parseInt(parts[1]);
         return minutes == 0 || minutes == 30;
     }
@@ -179,22 +179,30 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
         }
     }
 
+
     private void checkForOverlaps(String date, String startTime, String endTime, Runnable onSuccess) {
         slotsRef.orderByChild("tutorId").equalTo(tutorId)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
+                        boolean overlapFound = false;
+
                         for (DataSnapshot slotSnapshot : snapshot.getChildren()) {
                             AvailabilitySlot existingSlot = slotSnapshot.getValue(AvailabilitySlot.class);
                             if (existingSlot != null && existingSlot.date.equals(date)) {
                                 if (isOverlapping(startTime, endTime, existingSlot.startTime, existingSlot.endTime)) {
-                                    Toast.makeText(ManageAvailabilityActivity.this,
-                                            "Overlaps with existing slot", Toast.LENGTH_SHORT).show();
-                                    return;
+                                    overlapFound = true;
+                                    break;
                                 }
                             }
                         }
-                        onSuccess.run();
+
+                        if (overlapFound) {
+                            Toast.makeText(ManageAvailabilityActivity.this,
+                                    "This time overlaps with an existing slot", Toast.LENGTH_SHORT).show();
+                        } else {
+                            onSuccess.run();
+                        }
                     }
 
                     @Override
@@ -225,7 +233,7 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
                         for (DataSnapshot slotSnapshot : snapshot.getChildren()) {
                             AvailabilitySlot slot = slotSnapshot.getValue(AvailabilitySlot.class);
                             if (slot != null) {
-                                slot.slotId = slotSnapshot.getKey(); // Make sure slotId is set
+                                slot.slotId = slotSnapshot.getKey();
                                 slotList.add(slot);
                             }
                         }
@@ -243,7 +251,6 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
     private void deleteSlot(AvailabilitySlot slot) {
         Log.d("DeleteSlot", "Attempting to delete slot: " + slot.slotId);
 
-        // Check if slot has any booked sessions
         DatabaseReference sessionsRef = FirebaseDatabase.getInstance().getReference("sessions");
         sessionsRef.orderByChild("slotId").equalTo(slot.slotId)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -252,7 +259,6 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
                         boolean hasBookedSessions = false;
 
                         for (DataSnapshot sessionSnapshot : snapshot.getChildren()) {
-                            // Get status directly from snapshot to avoid Session object creation
                             String status = sessionSnapshot.child("status").getValue(String.class);
                             if ("pending".equals(status) || "approved".equals(status)) {
                                 hasBookedSessions = true;
@@ -262,21 +268,15 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
 
                         if (hasBookedSessions) {
                             Toast.makeText(ManageAvailabilityActivity.this,
-                                    "Cannot delete slot with booked sessions", Toast.LENGTH_SHORT).show();
-                        } else {
-                            // Safe to delete the slot
-                            if (slot.slotId != null) {
-                                slotsRef.child(slot.slotId).removeValue()
-                                        .addOnSuccessListener(aVoid ->
-                                                Toast.makeText(ManageAvailabilityActivity.this,
-                                                        "Slot deleted successfully", Toast.LENGTH_SHORT).show())
-                                        .addOnFailureListener(e ->
-                                                Toast.makeText(ManageAvailabilityActivity.this,
-                                                        "Failed to delete slot: " + e.getMessage(), Toast.LENGTH_SHORT).show());
-                            } else {
-                                Toast.makeText(ManageAvailabilityActivity.this,
-                                        "Error: Slot ID is null", Toast.LENGTH_SHORT).show();
-                            }
+                                    "Cannot delete a slot that has booked sessions", Toast.LENGTH_SHORT).show();
+                        } else if (slot.slotId != null) {
+                            slotsRef.child(slot.slotId).removeValue()
+                                    .addOnSuccessListener(aVoid ->
+                                            Toast.makeText(ManageAvailabilityActivity.this,
+                                                    "Slot deleted successfully", Toast.LENGTH_SHORT).show())
+                                    .addOnFailureListener(e ->
+                                            Toast.makeText(ManageAvailabilityActivity.this,
+                                                    "Failed to delete slot: " + e.getMessage(), Toast.LENGTH_SHORT).show());
                         }
                     }
 
@@ -288,3 +288,4 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
                 });
     }
 }
+
