@@ -11,7 +11,7 @@ When logged in with this account, the app redirects to the **Welcome Page** disp
 > You are logged in as Administrator.
 
 ## Special note
-We had an extension until November 2nd, due to one of our teamates dropping the course.
+We had an extension until November 2nd for deliverable 2, due to one of our teamates dropping the course.
 ---
 
 ## 
