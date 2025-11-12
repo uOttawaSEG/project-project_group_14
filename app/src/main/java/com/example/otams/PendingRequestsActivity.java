@@ -57,11 +57,8 @@ public class PendingRequestsActivity extends AppCompatActivity {
                         pendingSessions.clear();
                         for (DataSnapshot sessionSnapshot : snapshot.getChildren()) {
                             Session session = sessionSnapshot.getValue(Session.class);
-                            if (session != null) {
-                                session.sessionId = sessionSnapshot.getKey();
-                                if ("pending".equals(session.status)) {
-                                    pendingSessions.add(session);
-                                }
+                            if (session != null && "pending".equals(session.status)) {
+                                pendingSessions.add(session);
                             }
                         }
                         adapter.notifyDataSetChanged();
@@ -79,33 +76,22 @@ public class PendingRequestsActivity extends AppCompatActivity {
     private void handleSessionAction(Session session, String action) {
         DatabaseReference sessionRef = sessionsRef.child(session.sessionId);
 
-        switch (action) {
-            case "approve":
-                sessionRef.child("status").setValue("approved")
-                        .addOnSuccessListener(aVoid ->
-                                Toast.makeText(this, "Session approved", Toast.LENGTH_SHORT).show())
-                        .addOnFailureListener(e ->
-                                Toast.makeText(this, "Failed to approve: " + e.getMessage(), Toast.LENGTH_SHORT).show());
-                break;
-
-            case "reject":
-                sessionRef.child("status").setValue("rejected")
-                        .addOnSuccessListener(aVoid ->
-                                Toast.makeText(this, "Session rejected", Toast.LENGTH_SHORT).show())
-                        .addOnFailureListener(e ->
-                                Toast.makeText(this, "Failed to reject: " + e.getMessage(), Toast.LENGTH_SHORT).show());
-                break;
-
-            case "cancel":
-                sessionRef.child("status").setValue("cancelled")
-                        .addOnSuccessListener(aVoid ->
-                                Toast.makeText(this, "Session cancelled", Toast.LENGTH_SHORT).show())
-                        .addOnFailureListener(e ->
-                                Toast.makeText(this, "Failed to cancel: " + e.getMessage(), Toast.LENGTH_SHORT).show());
-                break;
+        if ("approve".equals(action)) {
+            sessionRef.child("status").setValue("approved")
+                    .addOnSuccessListener(aVoid ->
+                            Toast.makeText(this, "Session approved", Toast.LENGTH_SHORT).show())
+                    .addOnFailureListener(e ->
+                            Toast.makeText(this, "Failed to approve: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+        } else if ("reject".equals(action)) {
+            sessionRef.child("status").setValue("rejected")
+                    .addOnSuccessListener(aVoid ->
+                            Toast.makeText(this, "Session rejected", Toast.LENGTH_SHORT).show())
+                    .addOnFailureListener(e ->
+                            Toast.makeText(this, "Failed to reject: " + e.getMessage(), Toast.LENGTH_SHORT).show());
         }
     }
 
+    // Move the interface outside the inner class
     interface SessionActionListener {
         void onSessionAction(Session session, String action);
     }
@@ -132,17 +118,16 @@ public class PendingRequestsActivity extends AppCompatActivity {
             Session session = sessions.get(position);
 
             holder.tvCourse.setText("Course: " + (session.course != null ? session.course : "N/A"));
-            holder.tvDateTime.setText("Date: " + session.date + " " + session.startTime + " - " + session.endTime);
+            holder.tvDateTime.setText("Date: " + session.date + " " + session.startTime);
 
-            // Load detailed student information
-            loadStudentInfo(session.studentId, holder);
+            // Load student info
+            loadStudentInfo(session.studentId, holder.tvStudentName);
 
             holder.btnApprove.setOnClickListener(v -> listener.onSessionAction(session, "approve"));
             holder.btnReject.setOnClickListener(v -> listener.onSessionAction(session, "reject"));
-            holder.btnCancel.setOnClickListener(v -> listener.onSessionAction(session, "cancel"));
         }
 
-        private void loadStudentInfo(String studentId, ViewHolder holder) {
+        private void loadStudentInfo(String studentId, TextView tvStudentName) {
             usersRef.child("students").child(studentId)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -150,32 +135,17 @@ public class PendingRequestsActivity extends AppCompatActivity {
                             if (snapshot.exists()) {
                                 String firstName = snapshot.child("firstName").getValue(String.class);
                                 String lastName = snapshot.child("lastName").getValue(String.class);
-                                String email = snapshot.child("email").getValue(String.class);
-                                String phone = snapshot.child("phone").getValue(String.class);
-                                String program = snapshot.child("program").getValue(String.class);
-
                                 String studentName = (firstName != null ? firstName : "") + " " +
                                         (lastName != null ? lastName : "");
-
-                                holder.tvStudentName.setText("Student: " + studentName.trim());
-                                holder.tvStudentEmail.setText("Email: " + (email != null ? email : "N/A"));
-                                holder.tvStudentPhone.setText("Phone: " + (phone != null ? phone : "N/A"));
-                                holder.tvStudentProgram.setText("Program: " + (program != null ? program : "N/A"));
-
+                                tvStudentName.setText("Student: " + studentName.trim());
                             } else {
-                                holder.tvStudentName.setText("Student: Unknown");
-                                holder.tvStudentEmail.setText("Email: N/A");
-                                holder.tvStudentPhone.setText("Phone: N/A");
-                                holder.tvStudentProgram.setText("Program: N/A");
+                                tvStudentName.setText("Student: Unknown");
                             }
                         }
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
-                            holder.tvStudentName.setText("Student: Error loading");
-                            holder.tvStudentEmail.setText("Email: Error");
-                            holder.tvStudentPhone.setText("Phone: Error");
-                            holder.tvStudentProgram.setText("Program: Error");
+                            tvStudentName.setText("Student: Error loading");
                         }
                     });
         }
@@ -186,21 +156,16 @@ public class PendingRequestsActivity extends AppCompatActivity {
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
-            TextView tvStudentName, tvStudentEmail, tvStudentPhone, tvStudentProgram;
-            TextView tvCourse, tvDateTime;
-            Button btnApprove, btnReject, btnCancel;
+            TextView tvStudentName, tvCourse, tvDateTime;
+            Button btnApprove, btnReject;
 
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
                 tvStudentName = itemView.findViewById(R.id.tvStudentName);
-                tvStudentEmail = itemView.findViewById(R.id.tvStudentEmail);
-                tvStudentPhone = itemView.findViewById(R.id.tvStudentPhone);
-                tvStudentProgram = itemView.findViewById(R.id.tvStudentProgram);
                 tvCourse = itemView.findViewById(R.id.tvCourse);
                 tvDateTime = itemView.findViewById(R.id.tvDateTime);
                 btnApprove = itemView.findViewById(R.id.btnApprove);
                 btnReject = itemView.findViewById(R.id.btnReject);
-                btnCancel = itemView.findViewById(R.id.btnCancel);
             }
         }
     }
