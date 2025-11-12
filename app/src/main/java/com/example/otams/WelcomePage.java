@@ -14,7 +14,8 @@ public class WelcomePage extends AppCompatActivity {
     private TextView welcomeTitle, userNameText, userRoleText;
     private MaterialButton logoutButton;
     private MaterialButton adminInboxButton;
-    private MaterialButton tutorDashboardButton; // ADD THIS LINE
+    private MaterialButton tutorDashboardButton;
+    private MaterialButton studentDashboardButton; // ADDED
 
     private String name, role;
 
@@ -28,7 +29,8 @@ public class WelcomePage extends AppCompatActivity {
         userRoleText = findViewById(R.id.userRoleText);
         logoutButton = findViewById(R.id.LogoutButton);
         adminInboxButton = findViewById(R.id.adminInboxButton);
-        tutorDashboardButton = findViewById(R.id.tutorDashboardButton); // ADD THIS LINE
+        tutorDashboardButton = findViewById(R.id.tutorDashboardButton);
+        studentDashboardButton = findViewById(R.id.studentDashboardButton); // ADDED
 
         name = getIntent().getStringExtra("name");
         role = getIntent().getStringExtra("role");
@@ -51,6 +53,7 @@ public class WelcomePage extends AppCompatActivity {
             adminInboxButton.setVisibility(View.GONE);
         }
 
+        // show tutor dashboard button only for Tutor role
         if ("tutor".equalsIgnoreCase(role.trim())) {
             tutorDashboardButton.setVisibility(View.VISIBLE);
             tutorDashboardButton.setOnClickListener(v -> {
@@ -59,6 +62,17 @@ public class WelcomePage extends AppCompatActivity {
             });
         } else {
             tutorDashboardButton.setVisibility(View.GONE);
+        }
+
+        // show student dashboard button only for Student role - ADDED
+        if ("student".equalsIgnoreCase(role.trim())) {
+            studentDashboardButton.setVisibility(View.VISIBLE);
+            studentDashboardButton.setOnClickListener(v -> {
+                Intent i = new Intent(WelcomePage.this, StudentDashboardActivity.class);
+                startActivity(i);
+            });
+        } else {
+            studentDashboardButton.setVisibility(View.GONE);
         }
 
         logoutButton.setOnClickListener(v -> {

@@ -16,23 +16,13 @@
         android:background="@android:color/white">
 
         <TextView
-            android:id="@+id/tvStudentName"
+            android:id="@+id/tvTutorName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Student: John Doe"
-            android:textColor="@android:color/black"
-            android:textSize="14sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tvCourse"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Course: SEG2105"
+            android:text="Tutor: John Doe"
             android:textColor="@android:color/black"
             android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginTop="4dp" />
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvDateTime"
@@ -41,26 +31,16 @@
             android:text="2024-01-01 08:00 - 10:00"
             android:textColor="@android:color/darker_gray"
             android:textSize="14sp"
-            android:layout_marginTop="2dp" />
-
-        <TextView
-            android:id="@+id/tvStatus"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Status: Approved"
-            android:textColor="@color/primary_color"
-            android:textSize="12sp"
-            android:layout_marginTop="2dp" />
+            android:layout_marginTop="4dp" />
 
         <Button
-            android:id="@+id/btnCancel"
+            android:id="@+id/btnBook"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cancel Session"
-            android:backgroundTint="@color/red"
+            android:text="Book Session"
+            android:backgroundTint="@color/primary_color"
             android:textColor="@android:color/white"
-            android:layout_marginTop="8dp"
-            android:visibility="gone" />
+            android:layout_marginTop="8dp" />
 
     </LinearLayout>
 

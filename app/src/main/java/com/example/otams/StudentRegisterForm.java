@@ -70,6 +70,7 @@ public class StudentRegisterForm extends AppCompatActivity {
                                     req.phone = phone;
                                     req.program = program;
                                     req.status = "pending";
+                                    req.role = "student";
 
                                     requestsRef.child(uid).setValue(req)
                                             .addOnCompleteListener(new OnCompleteListener<Void>() {

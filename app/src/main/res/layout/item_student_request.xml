@@ -16,10 +16,10 @@
         android:background="@android:color/white">
 
         <TextView
-            android:id="@+id/tvStudentName"
+            android:id="@+id/tvTutorName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Student: John Doe"
+            android:text="Tutor: John Doe"
             android:textColor="@android:color/black"
             android:textSize="14sp"
             android:textStyle="bold" />
@@ -47,20 +47,10 @@
             android:id="@+id/tvStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Status: Approved"
+            android:text="Status: Pending"
             android:textColor="@color/primary_color"
             android:textSize="12sp"
             android:layout_marginTop="2dp" />
-
-        <Button
-            android:id="@+id/btnCancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Cancel Session"
-            android:backgroundTint="@color/red"
-            android:textColor="@android:color/white"
-            android:layout_marginTop="8dp"
-            android:visibility="gone" />
 
     </LinearLayout>
 

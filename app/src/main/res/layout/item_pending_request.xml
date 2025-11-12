@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp"
+    android:layout_margin="8dp"
     app:cardCornerRadius="12dp"
     app:cardElevation="4dp">
 
@@ -25,21 +25,55 @@
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/tvStudentEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Email: john@email.com"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="12sp"
+            android:layout_marginTop="2dp" />
+
+        <TextView
+            android:id="@+id/tvStudentPhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Phone: 123-456-7890"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="12sp"
+            android:layout_marginTop="1dp" />
+
+        <TextView
+            android:id="@+id/tvStudentProgram"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Program: Computer Science"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="12sp"
+            android:layout_marginTop="1dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
             android:id="@+id/tvCourse"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Course: SEG2105"
-            android:textColor="@android:color/darker_gray"
+            android:textColor="@color/primary_color"
             android:textSize="14sp"
-            android:layout_marginTop="4dp" />
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvDateTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Date: 2024-01-01 08:00"
+            android:text="Date: 2024-01-01 08:00 - 10:00"
             android:textColor="@android:color/darker_gray"
-            android:textSize="14sp"
+            android:textSize="12sp"
             android:layout_marginTop="2dp" />
 
         <LinearLayout
@@ -66,6 +100,17 @@
                 android:layout_weight="1"
                 android:text="Reject"
                 android:backgroundTint="@color/red"
+                android:textColor="@android:color/white"
+                android:layout_marginEnd="4dp"
+                android:layout_marginStart="4dp" />
+
+            <Button
+                android:id="@+id/btnCancel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Cancel"
+                android:backgroundTint="@android:color/darker_gray"
                 android:textColor="@android:color/white"
                 android:layout_marginStart="4dp" />
 

@@ -275,7 +275,7 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
                                                         "Failed to delete slot: " + e.getMessage(), Toast.LENGTH_SHORT).show());
                             } else {
                                 Toast.makeText(ManageAvailabilityActivity.this,
-                                        "Error: Slot ID is null", Toast.LENGTH_SHORT).show();
+                                        "Error: Slot ID is nulll", Toast.LENGTH_SHORT).show();
                             }
                         }
                     }

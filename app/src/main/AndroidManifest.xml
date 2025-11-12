@@ -36,6 +36,10 @@
         <activity android:name=".ManageAvailabilityActivity" />
         <activity android:name=".SessionsActivity" />
         <activity android:name=".PendingRequestsActivity" />
+        <activity android:name=".StudentDashboardActivity" />
+        <activity android:name=".BookSessionActivity" />
+        <activity android:name=".StudentSessionsActivity" />
+        <activity android:name=".StudentRequestsActivity" />
 
 
     </application>

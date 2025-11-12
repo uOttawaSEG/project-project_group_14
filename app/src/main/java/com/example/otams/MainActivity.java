@@ -3,6 +3,7 @@ package com.example.otams;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -44,14 +45,15 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         dbRef = FirebaseDatabase.getInstance().getReference("registrationRequests");
 
-        // logging in
         loginButton.setOnClickListener(v -> {
             String email = emailInput.getText().toString().trim();
             String password = passwordInput.getText().toString().trim();
 
+            if (email.isEmpty() || password.isEmpty()) {
+                Toast.makeText(this, "Please enter email and password", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-
-            // Check if it’s the admin Rohachena
             if (email.equalsIgnoreCase("Rohachena@gmail.com") && password.equals("group14")) {
                 Intent intent = new Intent(MainActivity.this, WelcomePage.class);
                 intent.putExtra("name", "Administrator");
@@ -61,7 +63,6 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
-            // Firebase login
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
@@ -69,14 +70,13 @@ public class MainActivity extends AppCompatActivity {
                             if (user == null) return;
 
                             String uid = user.getUid();
-
-                            // Check both student and tutor
                             checkUserStatus(uid);
+                        } else {
+                            Toast.makeText(MainActivity.this, "Invalid credentials.", Toast.LENGTH_SHORT).show();
                         }
                     });
         });
 
-        // SIGN UP BUTTON
         signUpButton.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, PreSignUpActivity.class);
             startActivity(intent);
@@ -84,39 +84,35 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkUserStatus(String uid) {
-        // Check first in students
         dbRef.child("students").child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot studentSnapshot) {
                 if (studentSnapshot.exists()) {
                     handleUserStatus(studentSnapshot);
                 } else {
-                    // If not student, check tutors
                     dbRef.child("tutors").child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot tutorSnapshot) {
                             if (tutorSnapshot.exists()) {
                                 handleUserStatus(tutorSnapshot);
+                            } else {
+                                Toast.makeText(MainActivity.this, "No registration record found.", Toast.LENGTH_SHORT).show();
+                                mAuth.signOut();
                             }
-
                         }
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
-
+                            Toast.makeText(MainActivity.this, "Error checking tutor: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                         }
-
-
                     });
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Toast.makeText(MainActivity.this, "Error checking student: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
-
-
         });
     }
 
@@ -130,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
         switch (status.toLowerCase()) {
             case "pending":
                 Intent pendingIntent = new Intent(MainActivity.this, PendingActivity.class);
-                pendingIntent.putExtra("firstName", firstName);  
+                pendingIntent.putExtra("firstName", firstName);
                 startActivity(pendingIntent);
                 finish();
                 break;
@@ -143,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case "approved":
-            case "accepted": // some use "accepted"
+            case "accepted":
                 Intent approvedIntent = new Intent(MainActivity.this, WelcomePage.class);
                 approvedIntent.putExtra("name", firstName);
                 approvedIntent.putExtra("role", role);
@@ -151,7 +147,10 @@ public class MainActivity extends AppCompatActivity {
                 finish();
                 break;
 
-
+            default:
+                Toast.makeText(this, "Unknown status: " + status, Toast.LENGTH_SHORT).show();
+                mAuth.signOut();
+                break;
         }
     }
 }

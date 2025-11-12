@@ -9,7 +9,6 @@
     android:background="@drawable/bg2"
     tools:context=".WelcomePage">
 
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -32,7 +31,6 @@
             android:padding="28dp"
             android:gravity="center_horizontal">
 
-
             <TextView
                 android:id="@+id/welcomeTitle"
                 android:layout_width="wrap_content"
@@ -43,27 +41,22 @@
                 android:textStyle="bold"
                 android:layout_marginBottom="12dp" />
 
-
             <TextView
                 android:id="@+id/userNameText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
                 android:textSize="22sp"
                 android:textStyle="bold"
                 android:textColor="@android:color/black"
                 android:layout_marginBottom="8dp" />
 
-
             <TextView
                 android:id="@+id/userRoleText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
                 android:textSize="18sp"
                 android:textColor="@android:color/darker_gray"
                 android:layout_marginBottom="24dp" />
-
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/LogoutButton"
@@ -76,7 +69,6 @@
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
-
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -103,8 +95,7 @@
             android:textSize="32sp"
             android:textStyle="bold" />
     </LinearLayout>
-
-
+    
     <com.google.android.material.button.MaterialButton
         android:id="@+id/adminInboxButton"
         android:layout_width="match_parent"
@@ -113,19 +104,38 @@
         app:cornerRadius="30dp"
         app:backgroundTint="@color/primary_color"
         android:textColor="@android:color/white"
+        android:layout_above="@id/card_view"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:layout_marginBottom="12dp"
         android:visibility="gone" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/tutorDashboardButton"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:text="Tutor Dashboard"
-        android:visibility="gone"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        app:backgroundTint="@color/primary_color"/>
+        app:cornerRadius="30dp"
+        app:backgroundTint="@color/primary_color"
+        android:textColor="@android:color/white"
+        android:layout_above="@id/adminInboxButton"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="12dp"
+        android:visibility="gone" />
 
-
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/studentDashboardButton"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="Student Dashboard"
+        app:cornerRadius="30dp"
+        app:backgroundTint="@color/primary_color"
+        android:textColor="@android:color/white"
+        android:layout_above="@id/tutorDashboardButton"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="12dp"
+        android:visibility="gone" />
 
 </RelativeLayout>

@@ -28,31 +28,31 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class SessionsActivity extends AppCompatActivity {
+public class StudentSessionsActivity extends AppCompatActivity {
 
     private RecyclerView rvSessions;
     private TextView tvTitle;
-    private DatabaseReference sessionsRef, usersRef;
-    private String tutorId;
+    private DatabaseReference sessionsRef, tutorsRef;
+    private String studentId;
     private String sessionType;
     private List<Session> sessionList;
-    private SessionsAdapter adapter;
+    private StudentSessionsAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sessions);
+        setContentView(R.layout.activity_student_sessions);
 
         rvSessions = findViewById(R.id.rvSessions);
         tvTitle = findViewById(R.id.tvTitle);
 
         sessionType = getIntent().getStringExtra("sessionType");
-        tutorId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        studentId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         sessionsRef = FirebaseDatabase.getInstance().getReference("sessions");
-        usersRef = FirebaseDatabase.getInstance().getReference("registrationRequests");
+        tutorsRef = FirebaseDatabase.getInstance().getReference("registrationRequests");
 
         sessionList = new ArrayList<>();
-        adapter = new SessionsAdapter(sessionList);
+        adapter = new StudentSessionsAdapter(sessionList);
         rvSessions.setLayoutManager(new LinearLayoutManager(this));
         rvSessions.setAdapter(adapter);
 
@@ -62,14 +62,14 @@ public class SessionsActivity extends AppCompatActivity {
 
     private void setupTitle() {
         if ("upcoming".equals(sessionType)) {
-            tvTitle.setText("Upcoming Sessions");
+            tvTitle.setText("My Upcoming Sessions");
         } else if ("past".equals(sessionType)) {
-            tvTitle.setText("Past Sessions");
+            tvTitle.setText("My Past Sessions");
         }
     }
 
     private void loadSessions() {
-        sessionsRef.orderByChild("tutorId").equalTo(tutorId)
+        sessionsRef.orderByChild("studentId").equalTo(studentId)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -88,7 +88,7 @@ public class SessionsActivity extends AppCompatActivity {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(SessionsActivity.this,
+                        Toast.makeText(StudentSessionsActivity.this,
                                 "Failed to load sessions: " + error.getMessage(),
                                 Toast.LENGTH_SHORT).show();
                     }
@@ -125,10 +125,10 @@ public class SessionsActivity extends AppCompatActivity {
                         Toast.makeText(this, "Failed to cancel: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
-    private class SessionsAdapter extends RecyclerView.Adapter<SessionsAdapter.ViewHolder> {
+    private class StudentSessionsAdapter extends RecyclerView.Adapter<StudentSessionsAdapter.ViewHolder> {
         private List<Session> sessions;
 
-        public SessionsAdapter(List<Session> sessions) {
+        public StudentSessionsAdapter(List<Session> sessions) {
             this.sessions = sessions;
         }
 
@@ -136,7 +136,7 @@ public class SessionsActivity extends AppCompatActivity {
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_session, parent, false);
+                    .inflate(R.layout.item_student_session, parent, false);
             return new ViewHolder(view);
         }
 
@@ -144,8 +144,8 @@ public class SessionsActivity extends AppCompatActivity {
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             Session session = sessions.get(position);
 
-            // Load student information
-            loadStudentInfo(session.studentId, holder.tvStudentName);
+            // Load tutor information
+            loadTutorInfo(session.tutorId, holder.tvTutorName);
 
             holder.tvCourse.setText("Course: " + (session.course != null ? session.course : "N/A"));
             holder.tvDateTime.setText(session.date + " " + session.startTime + " - " + session.endTime);
@@ -155,32 +155,33 @@ public class SessionsActivity extends AppCompatActivity {
             setupSessionActions(session, holder);
         }
 
-        private void loadStudentInfo(String studentId, TextView tvStudentName) {
-            usersRef.child("students").child(studentId)
+        private void loadTutorInfo(String tutorId, TextView tvTutorName) {
+            tutorsRef.child("tutors").child(tutorId)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             if (snapshot.exists()) {
                                 String firstName = snapshot.child("firstName").getValue(String.class);
                                 String lastName = snapshot.child("lastName").getValue(String.class);
-                                String studentName = (firstName != null ? firstName : "") + " " +
+                                String tutorName = (firstName != null ? firstName : "") + " " +
                                         (lastName != null ? lastName : "");
-                                tvStudentName.setText("Student: " + studentName.trim());
+                                tvTutorName.setText("Tutor: " + tutorName.trim());
                             } else {
-                                tvStudentName.setText("Student: Unknown");
+                                tvTutorName.setText("Tutor: Unknown");
                             }
                         }
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
-                            tvStudentName.setText("Student: Error loading");
+                            tvTutorName.setText("Tutor: Error loading");
                         }
                     });
         }
 
         private void setupSessionActions(Session session, ViewHolder holder) {
-            // Show cancel button only for upcoming approved sessions
-            if ("upcoming".equals(sessionType) && "approved".equals(session.status)) {
+            // Show cancel button only for upcoming pending/approved sessions
+            if ("upcoming".equals(sessionType) &&
+                    ("pending".equals(session.status) || "approved".equals(session.status))) {
                 holder.btnCancel.setVisibility(View.VISIBLE);
                 holder.btnCancel.setOnClickListener(v -> cancelSession(session));
             } else {
@@ -194,12 +195,12 @@ public class SessionsActivity extends AppCompatActivity {
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
-            TextView tvStudentName, tvCourse, tvDateTime, tvStatus;
+            TextView tvTutorName, tvCourse, tvDateTime, tvStatus;
             Button btnCancel;
 
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
-                tvStudentName = itemView.findViewById(R.id.tvStudentName);
+                tvTutorName = itemView.findViewById(R.id.tvTutorName);
                 tvCourse = itemView.findViewById(R.id.tvCourse);
                 tvDateTime = itemView.findViewById(R.id.tvDateTime);
                 tvStatus = itemView.findViewById(R.id.tvStatus);
