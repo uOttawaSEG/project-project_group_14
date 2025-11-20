@@ -85,10 +85,7 @@ public class BookSessionActivity extends AppCompatActivity {
                     }
                 }
 
-                if (availableSlots.isEmpty()) {
-                    Toast.makeText(BookSessionActivity.this,
-                            "No available slots found for " + course, Toast.LENGTH_SHORT).show();
-                }
+
             }
 
             @Override
@@ -114,7 +111,7 @@ public class BookSessionActivity extends AppCompatActivity {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        // Skip this slot if we can't verify courses
+
                     }
                 });
     }
@@ -141,13 +138,13 @@ public class BookSessionActivity extends AppCompatActivity {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        // Skip this slot if we can't check availability
+
                     }
                 });
     }
 
     private void bookSession(AvailabilitySlot slot, String course) {
-        // Check for time conflicts
+
         sessionsRef.orderByChild("studentId").equalTo(studentId)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -239,7 +236,7 @@ public class BookSessionActivity extends AppCompatActivity {
 
             holder.tvDateTime.setText(slot.date + " " + slot.startTime + " - " + slot.endTime);
 
-            // Load tutor information
+
             loadTutorInfo(slot.tutorId, holder);
 
             holder.btnBook.setOnClickListener(v -> {

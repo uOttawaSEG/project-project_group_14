@@ -14,8 +14,8 @@ import java.util.List;
 
 public class AvailabilityAdapter extends RecyclerView.Adapter<AvailabilityAdapter.ViewHolder> {
 
-    private List<AvailabilitySlot> slotList;
-    private OnDeleteClickListener onDeleteClickListener;
+    private final List<AvailabilitySlot> slotList;
+    private final OnDeleteClickListener onDeleteClickListener;
 
     public interface OnDeleteClickListener {
         void onDeleteClick(AvailabilitySlot slot);
@@ -42,9 +42,7 @@ public class AvailabilityAdapter extends RecyclerView.Adapter<AvailabilityAdapte
         holder.tvTime.setText(String.format("%s - %s", slot.startTime, slot.endTime));
         holder.tvAutoApprove.setText(slot.autoApprove ? "Auto-approve: ON" : "Auto-approve: OFF");
 
-        holder.btnDelete.setOnClickListener(v -> {
-            onDeleteClickListener.onDeleteClick(slot);
-        });
+        holder.btnDelete.setOnClickListener(v -> onDeleteClickListener.onDeleteClick(slot));
     }
 
     @Override

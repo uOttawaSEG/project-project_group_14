@@ -9,17 +9,20 @@
     android:background="@drawable/bg2"
     tools:context=".BookSessionActivity">
 
+    <!-- Blue overlay -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/primary_color"
         android:alpha="0.6" />
 
+    <!-- Search Card -->
     <androidx.cardview.widget.CardView
+        android:id="@+id/card_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
         android:layout_margin="20dp"
+        android:layout_alignParentTop="true"
         app:cardCornerRadius="24dp"
         app:cardElevation="8dp">
 
@@ -43,17 +46,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                app:boxCornerRadiusBottomEnd="15dp"
-                app:boxCornerRadiusBottomStart="15dp"
+                app:boxCornerRadiusTopStart="15dp"
                 app:boxCornerRadiusTopEnd="15dp"
-                app:boxCornerRadiusTopStart="15dp">
+                app:boxCornerRadiusBottomStart="15dp"
+                app:boxCornerRadiusBottomEnd="15dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etCourseSearch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Enter course code (e.g., SEG2105)" />
-
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton
@@ -64,48 +66,32 @@
                 app:cornerRadius="30dp"
                 app:backgroundTint="@color/primary_color"
                 android:textColor="@android:color/white" />
-
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <androidx.cardview.widget.CardView
+    <!-- Empty TextView -->
+    <TextView
+        android:id="@+id/tvEmpty"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/card_view"
-        android:layout_above="@+id/bottom_space"
-        android:layout_margin="20dp"
-        app:cardCornerRadius="24dp"
-        app:cardElevation="8dp">
+        android:layout_below="@id/card_search"
+        android:layout_marginTop="12dp"
+        android:gravity="center"
+        android:text="No available slots"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:visibility="gone" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Available Slots"
-                android:textColor="@color/primary_color"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="12dp" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvAvailableSlots"
-                android:layout_width="match_parent"
-                android:layout_height="400dp" />
-
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-
-    <View
-        android:id="@+id/bottom_space"
+    <!-- RecyclerView for available slots -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvAvailableSlots"
         android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:layout_alignParentBottom="true" />
+        android:layout_height="match_parent"
+        android:layout_below="@id/tvEmpty"
+        android:layout_marginTop="12dp"
+        android:paddingBottom="16dp" />
 
+    <!-- Top title -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

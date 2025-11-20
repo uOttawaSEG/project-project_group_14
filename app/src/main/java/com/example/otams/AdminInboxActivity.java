@@ -23,11 +23,8 @@ import java.util.ArrayList;
 
 public class AdminInboxActivity extends AppCompatActivity {
 
-    private RecyclerView rvRequests;
-    private Button btnViewRejected;
-
     private DatabaseReference requestsRef;
-    private ArrayList<RequestItem> requestList = new ArrayList<>();
+    private final ArrayList<RequestItem> requestList = new ArrayList<>();
     private RequestsAdapter adapter;
 
     @Override
@@ -35,8 +32,8 @@ public class AdminInboxActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_inbox);
 
-        rvRequests = findViewById(R.id.rvRequests);
-        btnViewRejected = findViewById(R.id.btnViewRejected);
+        RecyclerView rvRequests = findViewById(R.id.rvRequests);
+        Button btnViewRejected = findViewById(R.id.btnViewRejected);
 
         rvRequests.setLayoutManager(new LinearLayoutManager(this));
         adapter = new RequestsAdapter(requestList);
@@ -73,6 +70,8 @@ public class AdminInboxActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
+
+
         });
     }
 
@@ -94,6 +93,7 @@ public class AdminInboxActivity extends AppCompatActivity {
         ArrayList<RequestItem> items;
         RequestsAdapter(ArrayList<RequestItem> items) { this.items = items; }
 
+        @NonNull
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
@@ -114,7 +114,7 @@ public class AdminInboxActivity extends AppCompatActivity {
             } else if (r.role.equals("tutors")) {
                 info = "Degree: " + r.req.degree + "\nCourses: " + r.req.courses;
             }
-            holder.tvExtra.setText(info);
+
 
             holder.btnApprove.setOnClickListener(v -> approve(r));
             holder.btnReject.setOnClickListener(v -> reject(r));
@@ -124,14 +124,14 @@ public class AdminInboxActivity extends AppCompatActivity {
         public int getItemCount() { return items.size(); }
 
         class ViewHolder extends RecyclerView.ViewHolder {
-            TextView tvNameRole, tvEmail, tvExtra;
+            TextView tvNameRole, tvEmail;
             Button btnApprove, btnReject;
 
             ViewHolder(View itemView) {
                 super(itemView);
                 tvNameRole = itemView.findViewById(R.id.tvNameRole);
                 tvEmail = itemView.findViewById(R.id.tvEmail);
-                tvExtra = itemView.findViewById(R.id.tvExtra);
+
                 btnApprove = itemView.findViewById(R.id.btnApprove);
                 btnReject = itemView.findViewById(R.id.btnReject);
             }

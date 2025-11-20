@@ -21,7 +21,8 @@ public class SessionsAdapter extends RecyclerView.Adapter<SessionsAdapter.ViewHo
     private List<Session> sessions;
     private Context context;
 
-    public SessionsAdapter(List<Session> sessions) {
+    // Correct constructor: accept Context and sessions list
+    public SessionsAdapter(Context context, List<Session> sessions) {
         this.context = context;
         this.sessions = sessions;
     }
@@ -38,52 +39,67 @@ public class SessionsAdapter extends RecyclerView.Adapter<SessionsAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Session session = sessions.get(position);
 
-        holder.tvCourse.setText("Course: " + session.course);
-        holder.tvDateTime.setText(session.date + " " + session.startTime + " - " + session.endTime);
-        holder.tvStatus.setText("Status: " + session.status);
-
+        holder.tvCourse.setText("Course: " + (session.course != null ? session.course : "N/A"));
+        holder.tvDateTime.setText((session.date != null ? session.date : "")
+                + " " + (session.startTime != null ? session.startTime : "")
+                + " - " + (session.endTime != null ? session.endTime : ""));
+        holder.tvStatus.setText(session.status != null ? session.status : "N/A");
 
         DatabaseReference sessionRef = FirebaseDatabase.getInstance()
-                .getReference("sessions").child(session.sessionId);
+                .getReference("sessions").child(session.sessionId != null ? session.sessionId : "");
 
-
-        holder.btnApprove.setVisibility(View.GONE);
-        holder.btnReject.setVisibility(View.GONE);
-        holder.btnCancel.setVisibility(View.GONE);
-
+        // Defensive: check for null view references before calling methods on them
+        if (holder.btnApprove != null) holder.btnApprove.setVisibility(View.GONE);
+        if (holder.btnReject != null) holder.btnReject.setVisibility(View.GONE);
+        if (holder.btnCancel != null) holder.btnCancel.setVisibility(View.GONE);
 
         if ("pending".equalsIgnoreCase(session.status)) {
-            holder.btnApprove.setVisibility(View.VISIBLE);
-            holder.btnReject.setVisibility(View.VISIBLE);
+            if (holder.btnApprove != null) holder.btnApprove.setVisibility(View.VISIBLE);
+            if (holder.btnReject != null) holder.btnReject.setVisibility(View.VISIBLE);
         } else if ("approved".equalsIgnoreCase(session.status)) {
-            holder.btnCancel.setVisibility(View.VISIBLE);
+            if (holder.btnCancel != null) holder.btnCancel.setVisibility(View.VISIBLE);
         }
 
+        if (holder.btnApprove != null) {
+            holder.btnApprove.setOnClickListener(v -> {
+                if (session.sessionId == null || session.sessionId.isEmpty()) {
+                    Toast.makeText(context, "Invalid session id", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                sessionRef.child("status").setValue("approved")
+                        .addOnSuccessListener(a -> Toast.makeText(context, "Session approved", Toast.LENGTH_SHORT).show())
+                        .addOnFailureListener(e -> Toast.makeText(context, "Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+            });
+        }
 
-        holder.btnApprove.setOnClickListener(v -> {
-            sessionRef.child("status").setValue("approved")
-                    .addOnSuccessListener(a ->
-                            Toast.makeText(context, "Session approved", Toast.LENGTH_SHORT).show());
-        });
+        if (holder.btnReject != null) {
+            holder.btnReject.setOnClickListener(v -> {
+                if (session.sessionId == null || session.sessionId.isEmpty()) {
+                    Toast.makeText(context, "Invalid session id", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                sessionRef.child("status").setValue("rejected")
+                        .addOnSuccessListener(a -> Toast.makeText(context, "Session rejected", Toast.LENGTH_SHORT).show())
+                        .addOnFailureListener(e -> Toast.makeText(context, "Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+            });
+        }
 
-
-        holder.btnReject.setOnClickListener(v -> {
-            sessionRef.child("status").setValue("rejected")
-                    .addOnSuccessListener(a ->
-                            Toast.makeText(context, "Session rejected", Toast.LENGTH_SHORT).show());
-        });
-
-
-        holder.btnCancel.setOnClickListener(v -> {
-            sessionRef.child("status").setValue("cancelled")
-                    .addOnSuccessListener(a ->
-                            Toast.makeText(context, "Session cancelled", Toast.LENGTH_SHORT).show());
-        });
+        if (holder.btnCancel != null) {
+            holder.btnCancel.setOnClickListener(v -> {
+                if (session.sessionId == null || session.sessionId.isEmpty()) {
+                    Toast.makeText(context, "Invalid session id", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                sessionRef.child("status").setValue("cancelled")
+                        .addOnSuccessListener(a -> Toast.makeText(context, "Session cancelled", Toast.LENGTH_SHORT).show())
+                        .addOnFailureListener(e -> Toast.makeText(context, "Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+            });
+        }
     }
 
     @Override
     public int getItemCount() {
-        return sessions.size();
+        return sessions == null ? 0 : sessions.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
