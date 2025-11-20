@@ -14,7 +14,8 @@ public class WelcomePage extends AppCompatActivity {
     private TextView welcomeTitle, userNameText, userRoleText;
     private MaterialButton logoutButton;
     private MaterialButton adminInboxButton;
-    private MaterialButton tutorDashboardButton; // ADD THIS LINE
+    private MaterialButton tutorDashboardButton;
+    private MaterialButton studentDashboardButton;
 
     private String name, role;
 
@@ -28,7 +29,8 @@ public class WelcomePage extends AppCompatActivity {
         userRoleText = findViewById(R.id.userRoleText);
         logoutButton = findViewById(R.id.LogoutButton);
         adminInboxButton = findViewById(R.id.adminInboxButton);
-        tutorDashboardButton = findViewById(R.id.tutorDashboardButton); // ADD THIS LINE
+        tutorDashboardButton = findViewById(R.id.tutorDashboardButton);
+        studentDashboardButton = findViewById(R.id.studentDashboardButton);
 
         name = getIntent().getStringExtra("name");
         role = getIntent().getStringExtra("role");
@@ -40,10 +42,14 @@ public class WelcomePage extends AppCompatActivity {
         userNameText.setText(name);
         userRoleText.setText("You are logged in as " + role);
 
-        // show admin button only for Administrator role
-        if ("Administrator".equalsIgnoreCase(role.trim())) {
+        String roleNormalized = role.trim();
+
+
+
+        if ("Administrator".equalsIgnoreCase(roleNormalized)) {
             adminInboxButton.setVisibility(View.VISIBLE);
             adminInboxButton.setOnClickListener(v -> {
+
                 Intent i = new Intent(WelcomePage.this, AdminInboxActivity.class);
                 startActivity(i);
             });
@@ -51,7 +57,7 @@ public class WelcomePage extends AppCompatActivity {
             adminInboxButton.setVisibility(View.GONE);
         }
 
-        if ("tutor".equalsIgnoreCase(role.trim())) {
+        if ("tutor".equalsIgnoreCase(roleNormalized)) {
             tutorDashboardButton.setVisibility(View.VISIBLE);
             tutorDashboardButton.setOnClickListener(v -> {
                 Intent i = new Intent(WelcomePage.this, TutorDashboardActivity.class);
@@ -59,6 +65,17 @@ public class WelcomePage extends AppCompatActivity {
             });
         } else {
             tutorDashboardButton.setVisibility(View.GONE);
+        }
+
+
+        if ("student".equalsIgnoreCase(roleNormalized)) {
+            studentDashboardButton.setVisibility(View.VISIBLE);
+            studentDashboardButton.setOnClickListener(v -> {
+                Intent i = new Intent(WelcomePage.this, StudentDashboardActivity.class);
+                startActivity(i);
+            });
+        } else {
+            studentDashboardButton.setVisibility(View.GONE);
         }
 
         logoutButton.setOnClickListener(v -> {
@@ -69,6 +86,7 @@ public class WelcomePage extends AppCompatActivity {
         });
     }
 }
+
 
 
 

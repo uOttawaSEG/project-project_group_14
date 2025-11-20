@@ -57,11 +57,21 @@ public class PendingRequestsActivity extends AppCompatActivity {
                         pendingSessions.clear();
                         for (DataSnapshot sessionSnapshot : snapshot.getChildren()) {
                             Session session = sessionSnapshot.getValue(Session.class);
-                            if (session != null && "pending".equals(session.status)) {
-                                pendingSessions.add(session);
+                            if (session != null) {
+
+                                session.sessionId = sessionSnapshot.getKey();
+
+                                if ("pending".equals(session.status)) {
+                                    pendingSessions.add(session);
+                                }
                             }
                         }
                         adapter.notifyDataSetChanged();
+
+                        if (pendingSessions.isEmpty()) {
+                            Toast.makeText(PendingRequestsActivity.this,
+                                    "No pending requests found.", Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override
@@ -74,6 +84,11 @@ public class PendingRequestsActivity extends AppCompatActivity {
     }
 
     private void handleSessionAction(Session session, String action) {
+        if (session.sessionId == null) {
+            Toast.makeText(this, "Error: session ID missing.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         DatabaseReference sessionRef = sessionsRef.child(session.sessionId);
 
         if ("approve".equals(action)) {
@@ -91,7 +106,6 @@ public class PendingRequestsActivity extends AppCompatActivity {
         }
     }
 
-    // Move the interface outside the inner class
     interface SessionActionListener {
         void onSessionAction(Session session, String action);
     }

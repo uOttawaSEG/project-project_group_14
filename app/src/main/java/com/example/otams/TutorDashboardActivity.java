@@ -3,6 +3,7 @@ package com.example.otams;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -25,16 +26,20 @@ public class TutorDashboardActivity extends AppCompatActivity {
         });
 
         btnUpcomingSessions.setOnClickListener(v -> {
-            Intent intent = new Intent(TutorDashboardActivity.this, SessionsActivity.class);
-            intent.putExtra("sessionType", "upcoming");
-            startActivity(intent);
+            try {
+                startActivity(new Intent(TutorDashboardActivity.this, UpcomingSessionsActivity.class));
+            } catch (Exception e) {
+                Toast.makeText(this, "Unable to open Upcoming Sessions", Toast.LENGTH_SHORT).show();
+            }
         });
 
+
+
+
         btnPastSessions.setOnClickListener(v -> {
-            Intent intent = new Intent(TutorDashboardActivity.this, SessionsActivity.class);
-            intent.putExtra("sessionType", "past");
-            startActivity(intent);
+            startActivity(new Intent(TutorDashboardActivity.this, PastSessionsActivity.class));
         });
+
 
         btnPendingRequests.setOnClickListener(v -> {
             Intent intent = new Intent(TutorDashboardActivity.this, PendingRequestsActivity.class);

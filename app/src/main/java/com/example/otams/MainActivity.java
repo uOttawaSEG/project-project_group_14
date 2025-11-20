@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         dbRef = FirebaseDatabase.getInstance().getReference("registrationRequests");
 
-        // logging in
+
         loginButton.setOnClickListener(v -> {
             String email = emailInput.getText().toString().trim();
             String password = passwordInput.getText().toString().trim();
@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
-            // Firebase login
+
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
                             String uid = user.getUid();
 
-                            // Check both student and tutor
+
                             checkUserStatus(uid);
                         }
                     });
@@ -143,7 +143,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case "approved":
-            case "accepted": // some use "accepted"
                 Intent approvedIntent = new Intent(MainActivity.this, WelcomePage.class);
                 approvedIntent.putExtra("name", firstName);
                 approvedIntent.putExtra("role", role);

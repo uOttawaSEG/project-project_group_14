@@ -19,7 +19,7 @@
             android:id="@+id/tvStudentName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Student: John Doe"
+
             android:textColor="@android:color/black"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -28,16 +28,18 @@
             android:id="@+id/tvStudentEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Email: john@email.com"
             android:textColor="@android:color/darker_gray"
             android:textSize="12sp"
             android:layout_marginTop="2dp" />
+            <!---android:text="Email: john@email.com"-->
+
+
 
         <TextView
             android:id="@+id/tvStudentPhone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Phone: 123-456-7890"
+
             android:textColor="@android:color/darker_gray"
             android:textSize="12sp"
             android:layout_marginTop="1dp" />
@@ -46,10 +48,11 @@
             android:id="@+id/tvStudentProgram"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Program: Computer Science"
             android:textColor="@android:color/darker_gray"
             android:textSize="12sp"
             android:layout_marginTop="1dp" />
+            <!---android:text="Program: Computer Science"-->
+
 
         <View
             android:layout_width="match_parent"
