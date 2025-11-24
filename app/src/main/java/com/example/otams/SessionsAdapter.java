@@ -21,7 +21,7 @@ public class SessionsAdapter extends RecyclerView.Adapter<SessionsAdapter.ViewHo
     private List<Session> sessions;
     private Context context;
 
-    // Correct constructor: accept Context and sessions list
+
     public SessionsAdapter(Context context, List<Session> sessions) {
         this.context = context;
         this.sessions = sessions;
@@ -117,4 +117,3 @@ public class SessionsAdapter extends RecyclerView.Adapter<SessionsAdapter.ViewHo
         }
     }
 }
-

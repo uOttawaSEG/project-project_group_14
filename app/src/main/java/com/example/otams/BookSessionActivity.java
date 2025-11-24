@@ -184,18 +184,21 @@ public class BookSessionActivity extends AppCompatActivity {
     }
 
     private void createSessionRequest(AvailabilitySlot slot, String course) {
-        Session session = new Session(studentId, slot.tutorId, slot.slotId, course,
-                slot.date, slot.startTime, slot.endTime);
-
+        Session session = new Session();
         String sessionId = sessionsRef.push().getKey();
-        session.sessionId = sessionId;
+        session.sessionId = sessionId;              // ⭐ ADDED
+        session.studentId = studentId;              // ⭐ ADDED
+        session.tutorId = slot.tutorId;             // ⭐ ADDED
+        session.course = course;                    // ⭐ ADDED
+        session.date = slot.date;                   // ⭐ ADDED
+        session.startTime = slot.startTime;         // ⭐ ADDED
+        session.endTime = slot.endTime;             // ⭐ ADDED
+        session.createdAt = System.currentTimeMillis(); // ⭐ ADDED
+        session.updatedAt = System.currentTimeMillis(); // ⭐ ADDED
+        session.status = slot.autoApprove ? "approved" : "pending"; // ⭐ UPDATED
 
-        // Auto-approve if tutor has auto-approve enabled
-        if (slot.autoApprove) {
-            session.status = "approved";
-        }
-
-        sessionsRef.child(sessionId).setValue(session.toMap())
+        //// ⭐ CHANGED — removed .toMap() because it's not needed anymore
+        sessionsRef.child(sessionId).setValue(session)  // ⭐ UPDATED
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(BookSessionActivity.this,
                             "Session request " + (slot.autoApprove ? "approved" : "submitted"),

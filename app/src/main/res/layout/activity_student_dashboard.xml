@@ -51,6 +51,17 @@
                 app:backgroundTint="@color/primary_color"
                 android:textColor="@android:color/white" />
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnViewSessions"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:text="My Sessions"
+                app:cornerRadius="30dp"
+                app:backgroundTint="@color/primary_color"
+                android:textColor="@android:color/white"
+                android:layout_marginTop="16dp"/>
+
+
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

@@ -7,6 +7,7 @@ public class Session {
     public String sessionId;
     public String studentId;
     public String tutorId;
+    public String studentName;
     public String slotId;
     public String course;
     public String date;
