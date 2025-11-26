@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.RatingBar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,11 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +43,11 @@ public class BookSessionActivity extends AppCompatActivity {
         studentId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         slotsRef = FirebaseDatabase.getInstance().getReference("availabilitySlots");
         sessionsRef = FirebaseDatabase.getInstance().getReference("sessions");
-        tutorsRef = FirebaseDatabase.getInstance().getReference("registrationRequests");
+        tutorsRef = FirebaseDatabase.getInstance().getReference("sessions");
+
+        tutorsRef = FirebaseDatabase.getInstance()
+                .getReference("registrationRequests")
+                .child("tutors");
 
         availableSlots = new ArrayList<>();
         adapter = new AvailableSlotsAdapter(availableSlots, this::bookSession);
@@ -65,7 +66,6 @@ public class BookSessionActivity extends AppCompatActivity {
 
         availableSlots.clear();
 
-        // Get all availability slots
         slotsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -74,9 +74,7 @@ public class BookSessionActivity extends AppCompatActivity {
                     if (slot != null) {
                         slot.slotId = slotSnapshot.getKey();
 
-                        // Check if tutor offers this course
                         checkTutorCourses(slot, course, () -> {
-                            // Check if slot is already booked
                             checkSlotAvailability(slot, () -> {
                                 availableSlots.add(slot);
                                 adapter.notifyDataSetChanged();
@@ -84,8 +82,6 @@ public class BookSessionActivity extends AppCompatActivity {
                         });
                     }
                 }
-
-
             }
 
             @Override
@@ -97,7 +93,7 @@ public class BookSessionActivity extends AppCompatActivity {
     }
 
     private void checkTutorCourses(AvailabilitySlot slot, String course, Runnable onMatch) {
-        tutorsRef.child("tutors").child(slot.tutorId)
+        tutorsRef.child(slot.tutorId)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -186,19 +182,18 @@ public class BookSessionActivity extends AppCompatActivity {
     private void createSessionRequest(AvailabilitySlot slot, String course) {
         Session session = new Session();
         String sessionId = sessionsRef.push().getKey();
-        session.sessionId = sessionId;              // ⭐ ADDED
-        session.studentId = studentId;              // ⭐ ADDED
-        session.tutorId = slot.tutorId;             // ⭐ ADDED
-        session.course = course;                    // ⭐ ADDED
-        session.date = slot.date;                   // ⭐ ADDED
-        session.startTime = slot.startTime;         // ⭐ ADDED
-        session.endTime = slot.endTime;             // ⭐ ADDED
-        session.createdAt = System.currentTimeMillis(); // ⭐ ADDED
-        session.updatedAt = System.currentTimeMillis(); // ⭐ ADDED
-        session.status = slot.autoApprove ? "approved" : "pending"; // ⭐ UPDATED
+        session.sessionId = sessionId;
+        session.studentId = studentId;
+        session.tutorId = slot.tutorId;
+        session.course = course;
+        session.date = slot.date;
+        session.startTime = slot.startTime;
+        session.endTime = slot.endTime;
+        session.createdAt = System.currentTimeMillis();
+        session.updatedAt = System.currentTimeMillis();
+        session.status = slot.autoApprove ? "approved" : "pending";
 
-        //// ⭐ CHANGED — removed .toMap() because it's not needed anymore
-        sessionsRef.child(sessionId).setValue(session)  // ⭐ UPDATED
+        sessionsRef.child(sessionId).setValue(session)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(BookSessionActivity.this,
                             "Session request " + (slot.autoApprove ? "approved" : "submitted"),
@@ -216,6 +211,9 @@ public class BookSessionActivity extends AppCompatActivity {
         void onBookSession(AvailabilitySlot slot, String course);
     }
 
+    // ---------------------------
+    // AvailableSlotsAdapter (inner)
+    // ---------------------------
     private class AvailableSlotsAdapter extends RecyclerView.Adapter<AvailableSlotsAdapter.ViewHolder> {
         private List<AvailabilitySlot> slots;
         private BookSessionListener listener;
@@ -227,18 +225,17 @@ public class BookSessionActivity extends AppCompatActivity {
 
         @NonNull
         @Override
-        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public AvailableSlotsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.item_available_slot, parent, false);
             return new ViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull AvailableSlotsAdapter.ViewHolder holder, int position) {
             AvailabilitySlot slot = slots.get(position);
 
             holder.tvDateTime.setText(slot.date + " " + slot.startTime + " - " + slot.endTime);
-
 
             loadTutorInfo(slot.tutorId, holder);
 
@@ -250,16 +247,16 @@ public class BookSessionActivity extends AppCompatActivity {
             });
         }
 
-        private void loadTutorInfo(String tutorId, ViewHolder holder) {
-            tutorsRef.child("tutors").child(tutorId)
+        private void loadTutorInfo(String tutorId, final ViewHolder holder) {
+            // load tutor name
+            tutorsRef.child(tutorId)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             if (snapshot.exists()) {
                                 String firstName = snapshot.child("firstName").getValue(String.class);
                                 String lastName = snapshot.child("lastName").getValue(String.class);
-                                String tutorName = (firstName != null ? firstName : "") + " " +
-                                        (lastName != null ? lastName : "");
+                                String tutorName = (firstName != null ? firstName : "") + " " + (lastName != null ? lastName : "");
                                 holder.tvTutorName.setText("Tutor: " + tutorName.trim());
                             } else {
                                 holder.tvTutorName.setText("Tutor: Unknown");
@@ -271,22 +268,47 @@ public class BookSessionActivity extends AppCompatActivity {
                             holder.tvTutorName.setText("Tutor: Error loading");
                         }
                     });
+
+            // compute average rating for tutor from sessions node
+            sessionsRef.orderByChild("tutorId").equalTo(tutorId)
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snap) {
+                            int total = 0;
+                            int count = 0;
+                            for (DataSnapshot s : snap.getChildren()) {
+                                Integer r = s.child("rating").getValue(Integer.class);
+                                if (r != null && r > 0) {
+                                    total += r;
+                                    count++;
+                                }
+                            }
+                            float avg = (count == 0) ? 0f : (float) total / count;
+                            holder.ratingBarTutor.setRating(avg);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) { }
+
+                    });
         }
 
         @Override
         public int getItemCount() {
-            return slots.size();
+            return slots == null ? 0 : slots.size();
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
             TextView tvTutorName, tvDateTime;
             Button btnBook;
+            RatingBar ratingBarTutor;
 
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
                 tvTutorName = itemView.findViewById(R.id.tvTutorName);
                 tvDateTime = itemView.findViewById(R.id.tvDateTime);
                 btnBook = itemView.findViewById(R.id.btnBook);
+                ratingBarTutor = itemView.findViewById(R.id.ratingBarTutor); // <-- added
             }
         }
     }

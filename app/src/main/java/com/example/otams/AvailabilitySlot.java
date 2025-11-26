@@ -11,7 +11,7 @@ public class AvailabilitySlot {
     public String endTime;
     public boolean autoApprove;
     public long createdAt;
-
+    public boolean isBooked = false;
     public AvailabilitySlot() {}
 
     public AvailabilitySlot(String tutorId, String date, String startTime, String endTime, boolean autoApprove) {

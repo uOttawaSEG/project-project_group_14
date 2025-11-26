@@ -1,8 +1,9 @@
 package com.example.otams;
 
-
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -25,7 +26,7 @@ public class StudentSessionsActivity extends AppCompatActivity {
     private RecyclerView rvSessions;
     private TextView tvEmpty;
     private StudentSessionsAdapter adapter;
-
+    private Button btnPastSessions;
     private DatabaseReference sessionsRef;
     private String studentId;
 
@@ -39,6 +40,8 @@ public class StudentSessionsActivity extends AppCompatActivity {
         rvSessions = findViewById(R.id.rvSessions);
         tvEmpty = findViewById(R.id.tvEmpty);
 
+        btnPastSessions = findViewById(R.id.btnPastSessions);
+
         studentId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         sessionsRef = FirebaseDatabase.getInstance().getReference("sessions");
 
@@ -47,6 +50,11 @@ public class StudentSessionsActivity extends AppCompatActivity {
         rvSessions.setAdapter(adapter);
 
         loadSessions();
+        btnPastSessions.setOnClickListener(v -> {
+            Intent intent = new Intent(StudentSessionsActivity.this,
+                    StudentPastSessionsActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void loadSessions() {

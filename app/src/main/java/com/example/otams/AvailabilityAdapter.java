@@ -1,11 +1,13 @@
 package com.example.otams;
 
+import android.content.Context;
+import android.widget.Toast;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,14 +18,17 @@ public class AvailabilityAdapter extends RecyclerView.Adapter<AvailabilityAdapte
 
     private final List<AvailabilitySlot> slotList;
     private final OnDeleteClickListener onDeleteClickListener;
+    private final Context context;
 
     public interface OnDeleteClickListener {
         void onDeleteClick(AvailabilitySlot slot);
     }
 
-    public AvailabilityAdapter(List<AvailabilitySlot> slotList, OnDeleteClickListener listener) {
+
+    public AvailabilityAdapter(List<AvailabilitySlot> slotList, OnDeleteClickListener listener, Context ctx) {
         this.slotList = slotList;
         this.onDeleteClickListener = listener;
+        this.context = ctx;
     }
 
     @NonNull
@@ -42,7 +47,16 @@ public class AvailabilityAdapter extends RecyclerView.Adapter<AvailabilityAdapte
         holder.tvTime.setText(String.format("%s - %s", slot.startTime, slot.endTime));
         holder.tvAutoApprove.setText(slot.autoApprove ? "Auto-approve: ON" : "Auto-approve: OFF");
 
-        holder.btnDelete.setOnClickListener(v -> onDeleteClickListener.onDeleteClick(slot));
+
+        holder.btnDelete.setOnClickListener(v -> {
+            if (slot.isBooked) {
+
+                Toast.makeText(context, "Cannot delete — this slot has a booked session.", Toast.LENGTH_LONG).show();
+            } else {
+                onDeleteClickListener.onDeleteClick(slot);
+            }
+        });
+
     }
 
     @Override
@@ -63,3 +77,4 @@ public class AvailabilityAdapter extends RecyclerView.Adapter<AvailabilityAdapte
         }
     }
 }
+

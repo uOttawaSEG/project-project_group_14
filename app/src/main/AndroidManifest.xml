@@ -41,7 +41,7 @@
         <activity android:name=".StudentSessionsActivity" />
         <activity android:name=".StudentRequestsActivity" />
         <activity android:name=".UpcomingSessionsActivity" />
-        <activity android:name=".PastSessionsActivity" />
+        <activity android:name=".StudentPastSessionsActivity" />
 
 
 

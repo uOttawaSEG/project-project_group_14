@@ -4,7 +4,6 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -79,7 +78,10 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
 
     private void setupRecyclerView() {
         slotList = new ArrayList<>();
-        adapter = new AvailabilityAdapter(slotList, this::deleteSlot);
+
+
+        adapter = new AvailabilityAdapter(slotList, this::deleteSlot, this);
+
         rvSlots.setLayoutManager(new LinearLayoutManager(this));
         rvSlots.setAdapter(adapter);
     }
@@ -105,11 +107,12 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
         TimePickerDialog timePicker = new TimePickerDialog(
                 this,
                 (view, hourOfDay, minute) -> {
-                    calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                    calendar.set(Calendar.MINUTE, minute);
 
-                    // Round to nearest 30 minutes
-                    int roundedMinute = (minute / 30) * 30;
+                    int roundedMinute = (minute + 15) / 30 * 30;
+                    if (roundedMinute == 60) {
+                        roundedMinute = 0;
+                        hourOfDay += 1;
+                    }
                     String time = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, roundedMinute);
                     editText.setText(time);
                 },
@@ -131,19 +134,16 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
             return;
         }
 
-        //30-minute increments
         if (!isValidTimeSlot(startTime) || !isValidTimeSlot(endTime)) {
             Toast.makeText(this, "Times must be in 30-minute increments (e.g., 8:00, 8:30)", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        //check date not in past
         if (isPastDate(date)) {
             Toast.makeText(this, "Cannot select past dates", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        //check for overlapping slots
         checkForOverlaps(date, startTime, endTime, () -> {
             AvailabilitySlot slot = new AvailabilitySlot(tutorId, date, startTime, endTime, autoApprove);
             String slotId = slotsRef.push().getKey();
@@ -161,7 +161,6 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
     }
 
     private boolean isValidTimeSlot(String time) {
-        // Validate time is in 30-minute increments
         String[] parts = time.split(":");
         if (parts.length != 2) return false;
 
@@ -187,6 +186,7 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
                         for (DataSnapshot slotSnapshot : snapshot.getChildren()) {
                             AvailabilitySlot existingSlot = slotSnapshot.getValue(AvailabilitySlot.class);
                             if (existingSlot != null && existingSlot.date.equals(date)) {
+
                                 if (isOverlapping(startTime, endTime, existingSlot.startTime, existingSlot.endTime)) {
                                     Toast.makeText(ManageAvailabilityActivity.this,
                                             "Overlaps with existing slot", Toast.LENGTH_SHORT).show();
@@ -206,7 +206,12 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
     }
 
     private boolean isOverlapping(String start1, String end1, String start2, String end2) {
-        return (start1.compareTo(end2) < 0 && end1.compareTo(start2) > 0);
+        return timeToMinutes(start1) < timeToMinutes(end2) && timeToMinutes(end1) > timeToMinutes(start2);
+    }
+
+    private int timeToMinutes(String time) {
+        String[] parts = time.split(":");
+        return Integer.parseInt(parts[0]) * 60 + Integer.parseInt(parts[1]);
     }
 
     private void clearForm() {
@@ -225,7 +230,28 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
                         for (DataSnapshot slotSnapshot : snapshot.getChildren()) {
                             AvailabilitySlot slot = slotSnapshot.getValue(AvailabilitySlot.class);
                             if (slot != null) {
-                                slot.slotId = slotSnapshot.getKey(); // Make sure slotId is set
+                                slot.slotId = slotSnapshot.getKey();
+
+
+                                DatabaseReference sessionsRef = FirebaseDatabase.getInstance().getReference("sessions");
+                                sessionsRef.orderByChild("slotId").equalTo(slot.slotId)
+                                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot sessionSnap) {
+                                                for (DataSnapshot s : sessionSnap.getChildren()) {
+                                                    String status = s.child("status").getValue(String.class);
+                                                    if ("pending".equals(status) || "approved".equals(status)) {
+                                                        slot.isBooked = true;
+                                                        break;
+                                                    }
+                                                }
+                                                adapter.notifyDataSetChanged();
+                                            }
+
+                                            @Override
+                                            public void onCancelled(DatabaseError error) { }
+                                        });
+
                                 slotList.add(slot);
                             }
                         }
@@ -243,7 +269,6 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
     private void deleteSlot(AvailabilitySlot slot) {
         Log.d("DeleteSlot", "Attempting to delete slot: " + slot.slotId);
 
-        // Check if slot has any booked sessions
         DatabaseReference sessionsRef = FirebaseDatabase.getInstance().getReference("sessions");
         sessionsRef.orderByChild("slotId").equalTo(slot.slotId)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -252,7 +277,6 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
                         boolean hasBookedSessions = false;
 
                         for (DataSnapshot sessionSnapshot : snapshot.getChildren()) {
-                            // Get status directly from snapshot to avoid Session object creation
                             String status = sessionSnapshot.child("status").getValue(String.class);
                             if ("pending".equals(status) || "approved".equals(status)) {
                                 hasBookedSessions = true;
@@ -264,7 +288,6 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
                             Toast.makeText(ManageAvailabilityActivity.this,
                                     "Cannot delete slot with booked sessions", Toast.LENGTH_SHORT).show();
                         } else {
-                            // Safe to delete the slot
                             if (slot.slotId != null) {
                                 slotsRef.child(slot.slotId).removeValue()
                                         .addOnSuccessListener(aVoid ->
