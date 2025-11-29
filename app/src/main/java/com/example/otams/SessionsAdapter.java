@@ -48,7 +48,7 @@ public class SessionsAdapter extends RecyclerView.Adapter<SessionsAdapter.ViewHo
         DatabaseReference sessionRef = FirebaseDatabase.getInstance()
                 .getReference("sessions").child(session.sessionId != null ? session.sessionId : "");
 
-        // Defensive: check for null view references before calling methods on them
+
         if (holder.btnApprove != null) holder.btnApprove.setVisibility(View.GONE);
         if (holder.btnReject != null) holder.btnReject.setVisibility(View.GONE);
         if (holder.btnCancel != null) holder.btnCancel.setVisibility(View.GONE);

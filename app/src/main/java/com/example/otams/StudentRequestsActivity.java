@@ -92,7 +92,6 @@ public class StudentRequestsActivity extends AppCompatActivity {
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             Session session = requests.get(position);
 
-            // Load tutor information
             loadTutorInfo(session.tutorId, holder.tvTutorName);
 
             holder.tvCourse.setText("Course: " + (session.course != null ? session.course : "N/A"));

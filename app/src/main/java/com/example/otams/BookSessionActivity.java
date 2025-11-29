@@ -211,9 +211,6 @@ public class BookSessionActivity extends AppCompatActivity {
         void onBookSession(AvailabilitySlot slot, String course);
     }
 
-    // ---------------------------
-    // AvailableSlotsAdapter (inner)
-    // ---------------------------
     private class AvailableSlotsAdapter extends RecyclerView.Adapter<AvailableSlotsAdapter.ViewHolder> {
         private List<AvailabilitySlot> slots;
         private BookSessionListener listener;
@@ -269,7 +266,7 @@ public class BookSessionActivity extends AppCompatActivity {
                         }
                     });
 
-            // compute average rating for tutor from sessions node
+            // compute average rating for tutor
             sessionsRef.orderByChild("tutorId").equalTo(tutorId)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override

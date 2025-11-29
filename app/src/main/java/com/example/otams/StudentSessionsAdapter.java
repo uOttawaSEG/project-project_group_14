@@ -1,6 +1,8 @@
 package com.example.otams;
 
 import android.content.Context;
+import android.content.Intent;
+import android.provider.CalendarContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -44,13 +47,19 @@ public class StudentSessionsAdapter extends RecyclerView.Adapter<StudentSessions
         holder.tvDateTime.setText(session.date + "  " + session.startTime + " - " + session.endTime);
         holder.tvStatus.setText("Status: " + session.status);
 
-        // Button visible for pending + approved
+
         if (session.status.equalsIgnoreCase("pending") ||
                 session.status.equalsIgnoreCase("approved")) {
             holder.btnCancel.setVisibility(View.VISIBLE);
         } else {
             holder.btnCancel.setVisibility(View.GONE);
         }
+        if (session.status.equalsIgnoreCase("approved"))
+            holder.btnExport.setVisibility(View.VISIBLE);
+        else {
+            holder.btnExport.setVisibility(View.GONE);
+        }
+        holder.btnExport.setOnClickListener(v -> exportToCalendar(session));
 
 
 
@@ -59,13 +68,13 @@ public class StudentSessionsAdapter extends RecyclerView.Adapter<StudentSessions
 
         holder.btnCancel.setOnClickListener(v -> {
 
-            // If pending → cancel immediately
+
             if (session.status.equalsIgnoreCase("pending")) {
                 cancelSession(session);
                 return;
             }
 
-            // If approved → check 24 hour rule
+
             if (session.status.equalsIgnoreCase("approved")) {
 
                 try {
@@ -85,7 +94,7 @@ public class StudentSessionsAdapter extends RecyclerView.Adapter<StudentSessions
                         return;
                     }
 
-                    // Approved & more than 24 hours → allowed
+
                     cancelSession(session);
 
                 } catch (Exception e) {
@@ -104,6 +113,48 @@ public class StudentSessionsAdapter extends RecyclerView.Adapter<StudentSessions
                         Toast.makeText(context, "Session cancelled", Toast.LENGTH_SHORT).show()
                 );
     }
+    private void exportToCalendar(Session s) {
+        try {
+            String[] dateParts = s.date.split("-");
+            String[] startParts = s.startTime.split(":");
+            String[] endParts = s.endTime.split(":");
+
+            Calendar begin = Calendar.getInstance();
+            begin.set(
+                    Integer.parseInt(dateParts[0]),
+                    Integer.parseInt(dateParts[1]) - 1,
+                    Integer.parseInt(dateParts[2]),
+                    Integer.parseInt(startParts[0]),
+                    Integer.parseInt(startParts[1])
+            );
+
+            Calendar end = Calendar.getInstance();
+            end.set(
+                    Integer.parseInt(dateParts[0]),
+                    Integer.parseInt(dateParts[1]) - 1,
+                    Integer.parseInt(dateParts[2]),
+                    Integer.parseInt(endParts[0]),
+                    Integer.parseInt(endParts[1])
+            );
+
+            Intent intent = new Intent(Intent.ACTION_INSERT);
+            intent.setData(CalendarContract.Events.CONTENT_URI);
+
+            intent.putExtra(CalendarContract.Events.TITLE,
+                    "Tutoring Session - " + s.course);
+
+            intent.putExtra(CalendarContract.Events.DESCRIPTION,
+                    "Tutoring session booked through OTAMS.");
+
+            intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, begin.getTimeInMillis());
+            intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, end.getTimeInMillis());
+
+            context.startActivity(intent);
+
+        } catch (Exception e) {
+            Toast.makeText(context, "Failed to export.", Toast.LENGTH_SHORT).show();
+        }
+    }
 
 
     @Override
@@ -114,6 +165,8 @@ public class StudentSessionsAdapter extends RecyclerView.Adapter<StudentSessions
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvCourse, tvDateTime, tvStatus;
         Button btnCancel;
+        Button btnExport;
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -121,6 +174,7 @@ public class StudentSessionsAdapter extends RecyclerView.Adapter<StudentSessions
             tvDateTime = itemView.findViewById(R.id.tvDateTime);
             tvStatus = itemView.findViewById(R.id.tvStatus);
             btnCancel = itemView.findViewById(R.id.btnCancel);
+            btnExport = itemView.findViewById(R.id.btnExport);
         }
     }
 }

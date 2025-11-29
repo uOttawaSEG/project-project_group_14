@@ -63,7 +63,7 @@ public class UpcomingSessionsActivity extends AppCompatActivity {
     }
 
     private void loadApprovedUpcomingSessions() {
-        // Listen for tutor's sessions and filter approved
+
         sessionsRef.orderByChild("tutorId").equalTo(tutorId)
                 .addValueEventListener(new ValueEventListener() {
                     @Override

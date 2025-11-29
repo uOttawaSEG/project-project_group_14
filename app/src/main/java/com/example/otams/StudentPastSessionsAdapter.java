@@ -48,10 +48,10 @@ public class StudentPastSessionsAdapter extends RecyclerView.Adapter<StudentPast
                 (session.startTime != null ? session.startTime : "") + " - " +
                 (session.endTime != null ? session.endTime : ""));
 
-        // Show stored rating (if any)
+
         holder.ratingBarDisplay.setRating(session.rating > 0 ? session.rating : 0f);
 
-        // Rate button opens dialog
+
         holder.btnRate.setOnClickListener(v -> openRatingDialog(session));
     }
 

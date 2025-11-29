@@ -9,14 +9,14 @@
     android:background="@drawable/bg2"
     tools:context=".BookSessionActivity">
 
-    <!-- Blue overlay -->
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/primary_color"
         android:alpha="0.6" />
 
-    <!-- Search Card -->
+
     <androidx.cardview.widget.CardView
         android:id="@+id/card_search"
         android:layout_width="match_parent"
@@ -69,7 +69,7 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <!-- Empty TextView -->
+
     <TextView
         android:id="@+id/tvEmpty"
         android:layout_width="match_parent"
@@ -82,7 +82,7 @@
         android:textSize="16sp"
         android:visibility="gone" />
 
-    <!-- RecyclerView for available slots -->
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvAvailableSlots"
         android:layout_width="match_parent"
@@ -91,7 +91,7 @@
         android:layout_marginTop="12dp"
         android:paddingBottom="16dp" />
 
-    <!-- Top title -->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

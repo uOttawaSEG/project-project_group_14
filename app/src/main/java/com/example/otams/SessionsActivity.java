@@ -151,7 +151,7 @@ public class SessionsActivity extends AppCompatActivity {
             holder.tvDateTime.setText(session.date + " " + session.startTime + " - " + session.endTime);
             holder.tvStatus.setText("Status: " + (session.status != null ? session.status : "Unknown"));
 
-            // Setup session actions
+
             setupSessionActions(session, holder);
         }
 

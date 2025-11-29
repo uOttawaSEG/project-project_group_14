@@ -22,7 +22,6 @@
             android:textColor="@android:color/black"
             android:textSize="14sp"
             android:textStyle="bold" />
-            <!---android:text="Tutor: John Doe" -->
 
 
         <TextView
